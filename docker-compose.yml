@@ -14,7 +14,7 @@ services:
       build: ./docker/php
       restart: always
       volumes:
-        - .:/var/www/html
+        - ./src/public:/var/www/html
   db:
       image: postgres:13
       restart: always
