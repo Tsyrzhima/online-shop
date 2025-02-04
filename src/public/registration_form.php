@@ -3,7 +3,6 @@
         <h1>Register</h1>
         <p>Please fill in this form to create an account.</p>
         <hr>
-
         <label for="name"><b>Name:</b></label>
         <?php if(isset($errors['name'])):?>
         <label style="color: red"> <?php echo $errors['name'];?></label>
@@ -39,7 +38,7 @@
             <?php if(isset($repassword)):?>
                value=<?php echo $repassword;?>
                <?php endif;?>>
-               <hr>
+        <hr>
 
         <p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p>
         <button type="submit" class="registerbtn">Register</button>

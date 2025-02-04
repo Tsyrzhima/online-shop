@@ -14,7 +14,7 @@ function validateName($name)
     }
 }
 // Валидация email
-function validateEmail($email, $data)
+function validateEmail($email)
 {
     if(empty($email)){
         return 'Введите email';
@@ -25,8 +25,14 @@ function validateEmail($email, $data)
     elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)){
         return "некоректный email";
     }
-    elseif($data){
+    else{
+        $pdo = new PDO('pgsql:host=db;dbname=mydb', 'user', 'pwd');
+        $statement = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+        $statement->execute(['email' => $email]);
+        $data = $statement->fetch();
+        if($data) {
             return 'пользователь с таким email уже существует';
+        }
     }
 }
 
@@ -69,10 +75,7 @@ if(isset($_POST['name'])){
 }
 if(isset($_POST['email'])){
     $email = $_POST['email'];
-    $statement = $pdo->prepare("SELECT * FROM users WHERE email = :email");
-    $statement->execute(['email' => $email]);
-    $data = $statement->fetch();
-    $res_val = validateEmail($email, $data);
+    $res_val = validateEmail($email);
     if($res_val) {
         $errors['email'] = $res_val;
     }
@@ -99,6 +102,7 @@ if(empty($errors)){
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     $statement = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :hashed_password)");
     $statement->execute(['name' => $name, 'email' => $email, 'hashed_password' => $hashed_password]);
+
     $statement = $pdo->prepare("SELECT * FROM users WHERE email = :email");
     $statement->execute(['email' => $email]);
     $data = $statement->fetch();
