@@ -10,8 +10,8 @@
         <?php endif;?>
 
         <p><input type="email" id="email" name="email" required placeholder="Email"
-            <?php if(isset($email)):?>
-                value=<?php echo $email;?>
+            <?php if(isset($data['email'])):?>
+                value=<?php echo $data['email'];?>
             <?php endif;?>></p>
 
         <?php if(isset($errors['password'])):?>
@@ -19,8 +19,8 @@
         <?php endif;?>
 
         <p><input type="password" id="password" name="password" placeholder="Password"
-            <?php if(isset($password)):?>
-                value=<?php echo $password;?>
+            <?php if(isset($data['password'])):?>
+                value=<?php echo $data['password'];?>
             <?php endif;?>></p>
 
         <?php if(isset($errors['autorization'])):?>
