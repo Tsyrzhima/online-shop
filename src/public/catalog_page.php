@@ -1,5 +1,6 @@
 <form action="catalog.php" method="post">
-    <h1>Товары нашего магазина</h1>
+    <a href="handle_profile_form.php">Мой профиль</a>
+    <h1 style="color: #04AA6D">Товары нашего магазина</h1>
     <div class="container">
         <?php foreach ($products as $product): ?>
             <div class="product">
@@ -10,6 +11,7 @@
                 <a href="#" class="button">Купить</a>
             </div>
         <? endforeach; ?>
+        <a href="/profile.php"Мой профиль</a>
     </div>
 </form>
 
