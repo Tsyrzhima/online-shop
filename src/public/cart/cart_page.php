@@ -1,17 +1,16 @@
-<form action="catalog.php" method="post">
-    <a href="handle_profile_form.php">Мой профиль</a>
-    <h1 style="color: #04AA6D">Товары нашего магазина</h1>
+<form action="/cart" method="post">
+  <h1 style="color: #04AA6D">Моя корзина</h1>
     <div class="container">
-        <?php foreach ($products as $product): ?>
+        <?php foreach ($newUserProducts as $newUserProduct): ?>
             <div class="product">
-                <img src="<?php echo $product['image_url']?>">
-                <h2><?php echo $product['name']?></h2>
-                <p><?php echo $product['description']?></p>
-                <div class="price">₽ <?php echo $product['price']?></div>
-                <a href="#" class="button">Купить</a>
+                <img width="200" height="200" src="<?php echo $newUserProduct['image_url']?>">
+                <h2><?php echo $newUserProduct['name']?></h2>
+                <p><?php echo $newUserProduct['description']?></p>
+                <p><?php echo $newUserProduct['amount']?> штук </p>
+                <div class="price">₽ <?php echo $newUserProduct['price']?></div>
+                <a href="#" class="button">Удалить</a>
             </div>
         <? endforeach; ?>
-        <a href="/profile.php"Мой профиль</a>
     </div>
 </form>
 

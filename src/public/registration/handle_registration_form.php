@@ -79,6 +79,6 @@ if(empty($errors)){
 else{
     echo 'Вы не зарегистрированы';
 }
-require_once './registration_form.php';
+require_once './registration/registration_form.php';
 ?>
 

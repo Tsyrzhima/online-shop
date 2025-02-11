@@ -1,6 +1,9 @@
 <?php
 
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
 if(isset($_SESSION['userId'])){
     $userId = $_SESSION['userId'];
     $pdo = new PDO('pgsql:host=db;dbname=mydb', 'user', 'pwd');
@@ -8,8 +11,9 @@ if(isset($_SESSION['userId'])){
     $data = $statement->fetch();
 }
 else{
-    header('Location: login_form.php');
+    header('Location: login');
+    exit();
 }
 
-require_once './profile_form.php';
+require_once './profile/profile_form.php';
 ?>

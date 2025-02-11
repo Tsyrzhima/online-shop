@@ -1,25 +1,24 @@
-<form action="handle_edit_profile_form.php" method="POST">
+<form action="/add-product" method="POST">
     <div class="container">
-        <h1>Ваш профиль</h1>
-        <?php if(isset($data['avatar_url'])):?>
-            <img src="<?php echo $data['avatar_url'];?>">
+        <h1>Добавить продукт</h1>
+        <p>Для добавления продукта заполните форму</p>
+        <hr>
+        <label for="product_id"><b>id продукта:</b></label>
+        <?php if(isset($errors['product_id'])):?>
+        <label style="color: red"> <?php echo $errors['product_id'];?></label>
         <?php endif;?>
-        <hr>
-        <label for="name"><b>Имя:</b></label>
-        <input type="text" id="name" name="name"
-            <?php if(isset($data['name'])):?>
-                value=<?php echo $data['name'];?>
-            <?php endif;?>>
+        <input type="text" id="product_id" name="product_id" required
 
-        <label for="email"><b>Email:</b></label>
-        <input type="text" id="email" name="email"
-            <?php if(isset($data['email'])):?>
-                value=<?php echo $data['email'];?>
-            <?php endif;?>>
+        <label for="amount"><b>количество</b></label>
+        <?php if(isset($errors['amount'])):?>
+        <label style="color: red"> <?php echo $errors['amount'];?></label>
+        <?php endif;?>
+        <input type="text" id="amount" name="amount" required
         <hr>
 
-        <button type="submit" class="registerbtn">Изменить данные профиля</button>
+        <button type="submit" class="registerbtn">Добавить продукт</button>
     </div>
+
 </form>
 
 <style>

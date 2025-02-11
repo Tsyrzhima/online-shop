@@ -3,7 +3,7 @@
 
     <h2 class="login-header">Log in</h2>
 
-    <form class="login-container" action="handle_login.php" method="post">
+    <form class="login-container" action="/login" method="post">
 
         <?php if(isset($errors['email'])):?>
             <label style="color: red"> <?php echo $errors['email'];?></label>

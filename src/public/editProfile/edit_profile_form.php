@@ -1,4 +1,4 @@
-<form action="handle_edit_profile_form.php" method="POST">
+<form action="/edit-profile" method="POST">
     <div class="container">
         <h1>Изменение профиля</h1>
         <hr>

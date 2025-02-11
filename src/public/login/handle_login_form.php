@@ -26,14 +26,17 @@ if(empty($errors)){
     else {
         $passwordDb = $user['password'];
         if (password_verify($data['password'], $passwordDb)) {
-            session_start();
+            if (session_status() !== PHP_SESSION_ACTIVE) {
+                session_start();
+            }
             $_SESSION['userId'] = $user['id'];
             //setcookie('userId', $user['id']);
-            header('Location: catalog.php');
+            header('Location: catalog');
+            exit();
         } else {
             $errors['autorization'] = 'email или пароль неверный';
         }
     }
 }
-require_once './login_form.php';
+require_once './login/login_form.php';
 ?>
