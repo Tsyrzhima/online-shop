@@ -5,39 +5,39 @@
         <hr>
         <label for="name"><b>Name:</b></label>
         <?php if(isset($errors['name'])):?>
-        <label style="color: red"> <?php echo $errors['name'];?></label>
+            <label style="color: red"> <?php echo $errors['name'];?></label>
         <?php endif;?>
         <input type="text" id="name" name="name" required
             <?php if(isset($data['name'])):?>
-               value=<?php echo $data['name'];?>
-               <?php endif;?>>
+                value=<?php echo $data['name'];?>
+            <?php endif;?>>
 
         <label for="email"><b>Email:</b></label>
         <?php if(isset($errors['email'])):?>
-        <label style="color: red"> <?php echo $errors['email'];?></label>
+            <label style="color: red"> <?php echo $errors['email'];?></label>
         <?php endif;?>
         <input type="text" id="email" name="email" required
             <?php if(isset($data['email'])):?>
-               value=<?php echo $data['email'];?>
-               <?php endif;?>>
+                value=<?php echo $data['email'];?>
+            <?php endif;?>>
 
         <label for="password">Password:</label>
         <?php if(isset($errors['password'])):?>
-        <label style="color: red"><?php echo $errors['password'];?></label>
+            <label style="color: red"><?php echo $errors['password'];?></label>
         <?php endif;?>
         <input type="password" id="password" name="password" required
             <?php if(isset($data['password'])):?>
-               value=<?php echo $data['password'];?>
-               <?php endif;?>>
+                value=<?php echo $data['password'];?>
+            <?php endif;?>>
 
         <label for="repassword">Repeat Password:</label>
         <?php if(isset($errors['repassword'])):?>
-        <label style="color: red"><?php echo $errors['repassword'];?></label>
+            <label style="color: red"><?php echo $errors['repassword'];?></label>
         <?php endif;?>
         <input type="password" id="repassword" name="repassword" required
             <?php if(isset($data['repassword'])):?>
-               value=<?php echo $data['repassword'];?>
-               <?php endif;?>>
+                value=<?php echo $data['repassword'];?>
+            <?php endif;?>>
         <hr>
 
         <p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p>
