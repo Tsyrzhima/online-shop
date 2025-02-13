@@ -1,16 +1,23 @@
-<form action="/catalog" method="post">
+<form action="/catalog" method="POST">
     <a href="/profile">Мой профиль</a>
-    <a href="/add-product">Добавить продукт</a>
     <a href="/cart">Корзина продуктов</a>
     <h1 style="color: #04AA6D">Товары нашего магазина</h1>
     <div class="container">
         <?php foreach ($products as $product): ?>
             <div class="product">
-                <img width="200" height="200" src="<?php echo $product['image_url']?>">
-                <h2><?php echo $product['name']?></h2>
-                <p><?php echo $product['description']?></p>
-                <div class="price">₽ <?php echo $product['price']?></div>
-                <a href="#" class="button">Купить</a>
+                <form action="/catalog" method="POST">
+                    <img width="200" height="200" src="<?php echo $product['image_url']?>">
+                    <h2><?php echo $product['name']?></h2>
+                    <p><?php echo $product['description']?></p>
+                    <div class="price">₽ <?php echo $product['price']?></div>
+                    <input type="hidden" id="product_id" name="product_id" value = "<?php echo$product['id'];?>"
+                    <?php if(isset($errors['amount'])):?>
+                        <label style="color: red"> <?php echo $errors['amount'];?></label>
+                    <?php endif;?>
+                    <label for="amount"><b>кол-во</b></label>
+                    <input type="text" id="amount" name="amount"?>
+                    <button type = "submit" class="button">Купить</button>
+                </form>
             </div>
         <? endforeach; ?>
         <a href="/profile.php"Мой профиль</a>
@@ -18,6 +25,15 @@
 </form>
 
 <style>
+    input[type=text], input[type=password] {
+        width: 50%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+    }
+
     body {
         font-family: Arial, sans-serif;
         background-color: #f4f4f4;
@@ -35,7 +51,7 @@
         background: #fff;
         border: 1px solid #ddd;
         border-radius: 5px;
-        padding: 20px;
+        padding: 10px;
         margin: 10px;
         width: calc(33% - 40px);
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -70,7 +86,7 @@
         background: #04AA6D;
         color: #fff;
         border: none;
-        padding: 10px 15px;
+        padding: 15px 30px;
         border-radius: 5px;
         cursor: pointer;
         text-align: center;
@@ -80,5 +96,6 @@
     .button:hover {
         background: #04AA6D;
     }
+
 </style>
 
