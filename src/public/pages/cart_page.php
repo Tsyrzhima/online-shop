@@ -1,5 +1,6 @@
 <form action="/cart" method="post">
-  <h1 style="color: #04AA6D">Моя корзина</h1>
+    <a href="/catalog">Каталог продуктов</a>
+    <h1 style="color: #04AA6D">Моя корзина</h1>
     <div class="container">
         <?php foreach ($newUserProducts as $newUserProduct): ?>
             <div class="product">

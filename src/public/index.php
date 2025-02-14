@@ -27,9 +27,7 @@ if($requestUri === '/registration'){
     require_once './classes/Product.php';
     $product = new Product();
    if($requestMethod === 'GET'){
-        $product->getProducts();
-    }elseif($requestMethod === 'POST'){
-        $product->addProductToCart();
+       $product->getProducts();
     }else{
         echo "$requestMethod для адреса $requestUri не поддерживается";
     }
@@ -54,12 +52,18 @@ if($requestUri === '/registration'){
         echo "$requestMethod для адреса $requestUri не поддерживается";
     }
 }elseif ($requestUri === '/cart') {
-    require_once './classes/Product.php';
-    $product = new Product();
+    require_once './classes/Cart.php';
+    $cart = new Cart();
     if($requestMethod === 'GET'){
-        $product->getCart();
-    }elseif($requestMethod === 'POST'){
-        $product->getCart();
+        $cart->getCart();
+    }else{
+        echo "$requestMethod для адреса $requestUri не поддерживается";
+    }
+}elseif ($requestUri === '/add-product') {
+    require_once './classes/Cart.php';
+    $cart = new Cart();
+    if($requestMethod === 'POST'){
+        $cart->addProductToCart();
     }else{
         echo "$requestMethod для адреса $requestUri не поддерживается";
     }

@@ -1,11 +1,11 @@
-<form action="/catalog" method="POST">
+<form action="/add-product" method="POST">
     <a href="/profile">Мой профиль</a>
     <a href="/cart">Корзина продуктов</a>
     <h1 style="color: #04AA6D">Товары нашего магазина</h1>
     <div class="container">
         <?php foreach ($products as $product): ?>
             <div class="product">
-                <form action="/catalog" method="POST">
+                <form action="/add-product" method="POST">
                     <img width="200" height="200" src="<?php echo $product['image_url']?>">
                     <h2><?php echo $product['name']?></h2>
                     <p><?php echo $product['description']?></p>

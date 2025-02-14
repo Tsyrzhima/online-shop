@@ -27,6 +27,7 @@
             <label style="color: red"> <?php echo $errors['autorization'];?></label>
         <?php endif;?>
         <p><input type="submit" value="Log in"></p>
+        <a href="/registration">Зарегистрироваться</a>
     </form>
 </div>
 
