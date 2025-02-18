@@ -1,4 +1,5 @@
 <form action="/edit-profile" method="POST">
+    <a href="/logout">Выйти</a>
     <div class="container">
         <h1>Ваш профиль</h1>
         <?php if(isset($data['avatar_url'])):?>

@@ -1,17 +1,17 @@
 <?php
-class Product
+
+require_once '../Model/Model.php';
+class Product extends Model
 {
     public function getAll(): array|false
     {
-        $pdo = new PDO('pgsql:host=db;dbname=mydb', 'user', 'pwd');
-        $statement = $pdo->query("SELECT * FROM products");
+        $statement = $this->PDO->query("SELECT * FROM products");
         $products = $statement->fetchAll();
         return $products;
     }
     public function getById(int $productId): array|false
     {
-        $pdo = new PDO('pgsql:host=db;dbname=mydb', 'user', 'pwd');
-        $statement = $pdo->query("SELECT * FROM products WHERE id = $productId");
+        $statement = $this->PDO->query("SELECT * FROM products WHERE id = $productId");
         $product = $statement->fetch();
         return $product;
     }

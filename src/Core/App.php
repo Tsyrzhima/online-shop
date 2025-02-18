@@ -59,7 +59,13 @@ class App
             'POST' => [
                 'class' => 'CartController',
                 'method' => 'addProductToCart',
-            ]
+            ],
+        ],
+        '/logout' => [
+            'GET' => [
+                'class' => 'UserController',
+                'method' => 'logout',
+                    ]
         ]
     ];
 
