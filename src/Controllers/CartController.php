@@ -9,13 +9,11 @@ class CartController
         }
         if (isset($_SESSION['userId'])) {
             $userId = $_SESSION['userId'];
-            require_once '../Model/Cart.php';
             $cartModel = new Cart();
             $newUserProducts = [];
             $userProducts = $cartModel->getAllProductsById($userId);
             foreach ($userProducts as $userProduct)
             {
-                require_once '../Model/Product.php';
                 $productById = new Product();
                 $product = $productById->getById($userProduct['product_id']);
                 $userProduct['name'] = $product['name'];
@@ -43,7 +41,6 @@ class CartController
             $data = $_POST;
             $errors = $this->validate($data);
             if (empty($errors)) {
-                require_once '../Model/Cart.php';
                 $cartModel = new Cart();
                 $product = $cartModel->isUserHaveProduct($userId, $data['product_id']);
                 if ($product) {
@@ -68,9 +65,8 @@ class CartController
             if (!is_numeric($data['product_id'])) {
                 $errors['product_id'] = "id продукта может содержать только цифры";
             } else {
-                require_once '../Model/Cart.php';
-                $cartModel = new Cart();
-                $product = $cartModel->getAboutProductById($data['product_id']);
+                $productModel = new Product();
+                $product = $productModel->getById($data['product_id']);
                 if (!$product) {
                     $errors['product_id'] = 'id c таким продуктом не существует';
                 }

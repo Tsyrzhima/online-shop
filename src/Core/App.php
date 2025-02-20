@@ -79,7 +79,6 @@ class App
                 $handler = $routeMethods[$requestMethod];
                 $class = $handler['class'];
                 $method = $handler['method'];
-                require_once "../Controllers/{$class}.php";
                 $controller = new $class();
                 $controller->$method();
             } else {
@@ -87,7 +86,7 @@ class App
             }
         } else {
             http_response_code(404);
-            require_once './404.php';
+            require_once '../404.php';
         }
     }
 
