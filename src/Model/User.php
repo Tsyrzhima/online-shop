@@ -1,6 +1,7 @@
 <?php
 
-require_once '../Model/Model.php';
+namespace Model;
+
 class User extends Model
 {
     public function registrate(string $name, string $email, string $hashed_password)

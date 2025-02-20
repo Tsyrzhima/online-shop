@@ -1,5 +1,7 @@
 <?php
 
+namespace Model;
+
 require_once '../Model/Model.php';
 class Product extends Model
 {

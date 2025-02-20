@@ -1,5 +1,7 @@
 <?php
 
+namespace Controller;
+
 class UserController
 {
     public function getRegistrate()
@@ -61,9 +63,9 @@ class UserController
 
         if (empty($errors)) {
             $hashed_password = password_hash($data['password'], PASSWORD_DEFAULT);
-            $userModel = new User();
+            $userModel = new \Model\User();
             $userModel->registrate($data['name'], $data['email'], $hashed_password);
-            $userModel = new User();
+            $userModel = new \Model\User();
             $user = $userModel->getByEmail($data['email']);
             if (session_status() !== PHP_SESSION_ACTIVE) {
                 session_start();
@@ -97,7 +99,7 @@ class UserController
             } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                 $errors['email'] = "некоректный email";
             } else {
-                $userModel = new User();
+                $userModel = new \Model\User();
                 $user = $userModel->getByEmail($data['email']);
                 if ($user) {
                     $errors['email'] = 'пользователь с таким email уже существует';
@@ -134,7 +136,7 @@ class UserController
         $errors = $this->validateLogin($data);
 
         if (empty($errors)) {
-            $userModel = new User();
+            $userModel = new \Model\User();
             $user = $userModel->getByEmail($data['email']);
             if (!$user) {
                 $errors['autorization'] = 'email или пароль неверный';
@@ -174,7 +176,7 @@ class UserController
             session_start();
         }
         $userId = $_SESSION['userId'];
-        $userModel = new User();
+        $userModel = new \Model\User();
         $data = $userModel->getById($userId);
 
         $dataNew = $_POST;
@@ -182,7 +184,7 @@ class UserController
         $flag = false;
 
         if (empty($errors)) {
-            $userModel = new User();
+            $userModel = new \Model\User();
             if (!empty($dataNew['name']) && ($data['name'] !== $dataNew['name'])) {
                 $userModel->updateById($dataNew,'name', $userId);
                 $flag = true;
@@ -229,7 +231,7 @@ class UserController
                 } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                     $errors['email'] = "некоректный email";
                 } else {
-                    $userModel = new User();
+                    $userModel = new \Model\User();
                     $user = $userModel->getByEmail($data['email']);
                     if ($user) {
                         if ($user['id'] !== $userId) {
@@ -273,7 +275,7 @@ class UserController
             exit();
         } else {
             $userId = $_SESSION['userId'];
-            $userModel = new User();
+            $userModel = new \Model\User();
             $data = $userModel->getById($userId);
             require_once '../Views/profile_form.php';
         }

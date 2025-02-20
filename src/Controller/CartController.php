@@ -1,5 +1,9 @@
 <?php
 
+namespace Controller;
+
+use Model\Model;
+
 class CartController
 {
     public function getCart()
@@ -9,12 +13,12 @@ class CartController
         }
         if (isset($_SESSION['userId'])) {
             $userId = $_SESSION['userId'];
-            $cartModel = new Cart();
+            $cartModel = new \Model\Cart();
             $newUserProducts = [];
             $userProducts = $cartModel->getAllProductsById($userId);
             foreach ($userProducts as $userProduct)
             {
-                $productById = new Product();
+                $productById = new \Model\Product();
                 $product = $productById->getById($userProduct['product_id']);
                 $userProduct['name'] = $product['name'];
                 $userProduct['price'] = $product['price'];
@@ -41,7 +45,7 @@ class CartController
             $data = $_POST;
             $errors = $this->validate($data);
             if (empty($errors)) {
-                $cartModel = new Cart();
+                $cartModel = new \Model\Cart();
                 $product = $cartModel->isUserHaveProduct($userId, $data['product_id']);
                 if ($product) {
                     $amount = $product['amount'] + $data['amount'];
@@ -65,7 +69,7 @@ class CartController
             if (!is_numeric($data['product_id'])) {
                 $errors['product_id'] = "id продукта может содержать только цифры";
             } else {
-                $productModel = new Product();
+                $productModel = new \Model\Product();
                 $product = $productModel->getById($data['product_id']);
                 if (!$product) {
                     $errors['product_id'] = 'id c таким продуктом не существует';

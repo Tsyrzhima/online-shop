@@ -1,6 +1,7 @@
 <?php
 
-require_once '../Model/Model.php';
+namespace Model;
+
 class Cart extends Model
 {
     public function getAllProductsById(int $userId): array|false

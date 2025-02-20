@@ -1,5 +1,6 @@
 <?php
 
+namespace Core;
 class App
 {
     private array $routes = [
@@ -79,7 +80,8 @@ class App
                 $handler = $routeMethods[$requestMethod];
                 $class = $handler['class'];
                 $method = $handler['method'];
-                $controller = new $class();
+                $namespace = "\Controller\\" . $class;
+                $controller = new $namespace();
                 $controller->$method();
             } else {
                 echo "$requestMethod для адреса $requestUri не поддерживается";
