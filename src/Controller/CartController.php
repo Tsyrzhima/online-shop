@@ -2,10 +2,15 @@
 
 namespace Controller;
 
-use Model\Model;
+use Model\Cart;
+use Model\Product;
 
 class CartController
 {
+    public function __construct()
+    {
+        $this->cartModel = new Cart();
+    }
     public function getCart()
     {
         if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -13,12 +18,11 @@ class CartController
         }
         if (isset($_SESSION['userId'])) {
             $userId = $_SESSION['userId'];
-            $cartModel = new \Model\Cart();
             $newUserProducts = [];
-            $userProducts = $cartModel->getAllProductsById($userId);
+            $userProducts = $this->cartModel->getAllProductsById($userId);
             foreach ($userProducts as $userProduct)
             {
-                $productById = new \Model\Product();
+                $productById = new Product();
                 $product = $productById->getById($userProduct['product_id']);
                 $userProduct['name'] = $product['name'];
                 $userProduct['price'] = $product['price'];
@@ -45,13 +49,12 @@ class CartController
             $data = $_POST;
             $errors = $this->validate($data);
             if (empty($errors)) {
-                $cartModel = new \Model\Cart();
-                $product = $cartModel->isUserHaveProduct($userId, $data['product_id']);
+                $product = $this->cartModel->isUserHaveProduct($userId, $data['product_id']);
                 if ($product) {
                     $amount = $product['amount'] + $data['amount'];
-                    $cartModel->incrementProductAmount($userId, $data['product_id'], $amount);
+                    $this->cartModel->incrementProductAmount($userId, $data['product_id'], $amount);
                 } else {
-                    $cartModel->addProduct($userId, $data['product_id'], $data['amount']);
+                    $this->cartModel->addProduct($userId, $data['product_id'], $data['amount']);
                 }
             }
             header('Location: /catalog');
@@ -69,7 +72,7 @@ class CartController
             if (!is_numeric($data['product_id'])) {
                 $errors['product_id'] = "id продукта может содержать только цифры";
             } else {
-                $productModel = new \Model\Product();
+                $productModel = new Product();
                 $product = $productModel->getById($data['product_id']);
                 if (!$product) {
                     $errors['product_id'] = 'id c таким продуктом не существует';

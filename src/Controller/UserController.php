@@ -2,8 +2,14 @@
 
 namespace Controller;
 
+use Model\User;
+
 class UserController
 {
+    public function __construct()
+    {
+        $this->userModel = new User();
+    }
     public function getRegistrate()
     {
         if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -63,10 +69,8 @@ class UserController
 
         if (empty($errors)) {
             $hashed_password = password_hash($data['password'], PASSWORD_DEFAULT);
-            $userModel = new \Model\User();
-            $userModel->registrate($data['name'], $data['email'], $hashed_password);
-            $userModel = new \Model\User();
-            $user = $userModel->getByEmail($data['email']);
+            $this->userModel->registrate($data['name'], $data['email'], $hashed_password);
+            $user = $this->userModel->getByEmail($data['email']);
             if (session_status() !== PHP_SESSION_ACTIVE) {
                 session_start();
             }
@@ -99,8 +103,7 @@ class UserController
             } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                 $errors['email'] = "некоректный email";
             } else {
-                $userModel = new \Model\User();
-                $user = $userModel->getByEmail($data['email']);
+                $user = $this->userModel->getByEmail($data['email']);
                 if ($user) {
                     $errors['email'] = 'пользователь с таким email уже существует';
                 }
@@ -136,8 +139,7 @@ class UserController
         $errors = $this->validateLogin($data);
 
         if (empty($errors)) {
-            $userModel = new \Model\User();
-            $user = $userModel->getByEmail($data['email']);
+            $user = $this->userModel->getByEmail($data['email']);
             if (!$user) {
                 $errors['autorization'] = 'email или пароль неверный';
             } else {
@@ -176,27 +178,24 @@ class UserController
             session_start();
         }
         $userId = $_SESSION['userId'];
-        $userModel = new \Model\User();
-        $data = $userModel->getById($userId);
-
+        $data = $this->userModel->getById($userId);
         $dataNew = $_POST;
         $errors = $this->validateEditProfile($dataNew, $userId);
         $flag = false;
 
         if (empty($errors)) {
-            $userModel = new \Model\User();
             if (!empty($dataNew['name']) && ($data['name'] !== $dataNew['name'])) {
-                $userModel->updateById($dataNew,'name', $userId);
+                $this->userModel->updateById($dataNew,'name', $userId);
                 $flag = true;
             }
             if (!empty($dataNew['email']) && ($data['email'] !== $dataNew['email'])) {
-                $userModel->updateById($dataNew,'email', $userId);
+                $this->userModel->updateById($dataNew,'email', $userId);
                 $flag = true;
             }
             if (!empty($dataNew['password']) && (!password_verify($dataNew['password'], $data['password']))) {
                 $hashed_password = password_hash($dataNew['password'], PASSWORD_DEFAULT);
                 $dataNew['password'] = $hashed_password;
-                $userModel->updateById($dataNew,'password', $userId);
+                $this->userModel->updateById($dataNew,'password', $userId);
                 $flag = true;
             }
             if ($flag) {
@@ -231,8 +230,7 @@ class UserController
                 } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                     $errors['email'] = "некоректный email";
                 } else {
-                    $userModel = new \Model\User();
-                    $user = $userModel->getByEmail($data['email']);
+                    $user = $this->userModel->getByEmail($data['email']);
                     if ($user) {
                         if ($user['id'] !== $userId) {
                             $errors['email'] = 'пользователь с таким email уже существует';
@@ -275,8 +273,7 @@ class UserController
             exit();
         } else {
             $userId = $_SESSION['userId'];
-            $userModel = new \Model\User();
-            $data = $userModel->getById($userId);
+            $data = $this->userModel->getById($userId);
             require_once '../Views/profile_form.php';
         }
     }

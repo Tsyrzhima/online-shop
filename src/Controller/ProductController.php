@@ -2,6 +2,8 @@
 
 namespace Controller;
 
+use Model\Product;
+
 class ProductController
 {
     public function getProducts()
@@ -10,7 +12,7 @@ class ProductController
             session_start();
         }
         if (isset($_SESSION['userId'])) {
-            $productModel = new \Model\Product();
+            $productModel = new Product();
             $products = $productModel->getAll();
             require_once '../Views/catalog.php';
         } else {
