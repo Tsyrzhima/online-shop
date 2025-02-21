@@ -7,6 +7,7 @@ use Model\Product;
 
 class CartController
 {
+    private Cart $cartModel;
     public function __construct()
     {
         $this->cartModel = new Cart();

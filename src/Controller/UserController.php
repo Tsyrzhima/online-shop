@@ -6,6 +6,7 @@ use Model\User;
 
 class UserController
 {
+    private User $userModel;
     public function __construct()
     {
         $this->userModel = new User();
