@@ -74,14 +74,20 @@ class App
                 'method' => 'logout',
                     ]
         ],
-        '/order' => [
+        '/create-order' => [
             'GET' => [
                 'class' => OrderController::class,
-                'method' => 'getOrder',
+                'method' => 'getCheckoutForm',
             ],
             'POST' => [
                 'class' => OrderController::class,
-                'method' => 'addOrder',
+                'method' => 'handleCheckout',
+            ]
+        ],
+        '/user-orders' => [
+            'GET' => [
+                'class' => OrderController::class,
+                'method' => 'getAllOrders',
             ]
         ]
     ];

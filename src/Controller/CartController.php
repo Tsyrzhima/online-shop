@@ -19,11 +19,11 @@ class CartController
         }
         if (isset($_SESSION['userId'])) {
             $userId = $_SESSION['userId'];
+            $productById = new Product();
             $newUserProducts = [];
             $userProducts = $this->cartModel->getAllProductsById($userId);
             foreach ($userProducts as $userProduct)
             {
-                $productById = new Product();
                 $product = $productById->getById($userProduct['product_id']);
                 $userProduct['name'] = $product['name'];
                 $userProduct['price'] = $product['price'];

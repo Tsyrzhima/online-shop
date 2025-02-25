@@ -13,7 +13,7 @@
             </div>
         <? endforeach; ?>
     </div>
-    <a href="/order" methods="GET" class="button">Оформить заказ</a>
+    <a href="/create-order" methods="GET" class="button">Оформить заказ</a>
 </form>
 
 <style>

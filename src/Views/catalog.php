@@ -1,6 +1,7 @@
 <form action="/add-product" method="POST">
     <a href="/profile">Мой профиль</a>
     <a href="/cart">Корзина продуктов</a>
+    <a href="/user-orders">Мои заказы</a>
     <h1 style="color: #04AA6D">Товары нашего магазина</h1>
     <div class="container">
         <?php foreach ($products as $product): ?>
@@ -16,7 +17,7 @@
                     <?php endif;?>
                     <label for="amount"><b>кол-во</b></label>
                     <input type="text" id="amount" name="amount"?>
-                    <button type = "submit" class="button">Купить</button>
+                    <button type = "submit" class="button">Добавить в корзину</button>
                 </form>
             </div>
         <? endforeach; ?>

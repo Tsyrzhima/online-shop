@@ -26,5 +26,10 @@ class Cart extends Model
         $statement = $this->PDO->prepare("INSERT INTO user_products (user_id, product_id, amount) VALUES ($userId, $productId, :amount)");
         $statement->execute(['amount' => $amount]);
     }
+    public function deleteByUserId(int $userId)
+    {
+        $statement = $this->PDO->prepare("DELETE FROM user_products WHERE user_id = :userId");
+        $statement->execute(['userId' => $userId]);
+    }
 
 }

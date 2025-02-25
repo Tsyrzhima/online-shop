@@ -4,17 +4,28 @@ namespace Model;
 
 class Order extends Model
 {
-    public function add(int $userId, int $orderProductId, string $delivery_address, string $phoneNumber, int $total)
+    public function create(array $data, int $userId): int
     {
-        $statement = $this->PDO->prepare("INSERT INTO orders (user_id, order_products_id, delivery_address, phone_number, total)
-                                                    VALUES ($userId, $orderProductId, :address, :phone, $total)");
-        $statement->execute(['address' => $delivery_address, 'phone' => $phoneNumber]);
+        $stmt = $this->PDO->prepare(
+            "INSERT INTO orders (contact_name, contact_phone, comment, user_id, address)
+                    VALUES (:name, :phone, :comment, :user_id, :address) RETURNING id"
+        );
+        $stmt->execute([
+            'name' => $data['name'],
+            'phone' => $data['phone'],
+            'comment' => $data['comment'],
+            'address' => $data['address'],
+            'user_id' => $userId
+        ]);
+        $dataId = $stmt->fetch();
+        return $dataId['id'];
     }
-    public function addProduct(int $productId, string $name, int $price, int $amount, int $totalProducts): int
+
+    public function getAllById($userId): array
     {
-        $statement = $this->PDO->prepare("INSERT INTO order_products (product_id, name, price, amount, total_products)
-                                                    VALUES ($productId, $name, $price, :amount, $totalProducts)");
-        $statement->execute(['amount' => $amount]);
-        return $this->PDO->lastInsertId();
+        $stmt = $this->PDO->prepare('SELECT * FROM orders WHERE user_id = :user_id');
+        $stmt->execute(['user_id' => $userId]);
+        return $stmt->fetchAll();
     }
+
 }
