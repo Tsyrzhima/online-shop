@@ -24,7 +24,7 @@ class CartController
             $userProducts = $this->cartModel->getAllProductsById($userId);
             foreach ($userProducts as $userProduct)
             {
-                $product = $productById->getById($userProduct['product_id']);
+                $product = $productById->getOneById($userProduct['product_id']);
                 $userProduct['name'] = $product['name'];
                 $userProduct['price'] = $product['price'];
                 $userProduct['description'] = $product['description'];
@@ -74,7 +74,7 @@ class CartController
                 $errors['product_id'] = "id продукта может содержать только цифры";
             } else {
                 $productModel = new Product();
-                $product = $productModel->getById($data['product_id']);
+                $product = $productModel->getOneById($data['product_id']);
                 if (!$product) {
                     $errors['product_id'] = 'id c таким продуктом не существует';
                 }

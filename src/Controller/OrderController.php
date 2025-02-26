@@ -13,11 +13,13 @@ class OrderController
     private Cart $cartModel;
     private Product $productModel;
     private OrderProduct $orderProductModel;
+    private Order $orderModel;
     public function __construct()
     {
         $this->cartModel = new Cart();
         $this->productModel = new Product();
         $this->orderProductModel = new OrderProduct();
+        $this->orderModel = new Order();
     }
 
     public function getCheckoutForm()
@@ -52,22 +54,18 @@ class OrderController
         }
         $userId = $_SESSION['userId'];
 
-        $orderModel = new Order();
-        $userOrders = $orderModel->getAllById($userId);
+        $userOrders = $this->orderModel->getAllByUserId($userId);
 
         $newUserOrders = [];
 
         foreach ($userOrders as $userOrder) {
-            $userOrder['total'] = 0;
-            $orderProducts = $this->orderProductModel->getAllProductsByOrderId($userOrder['id']);
+            $orderProducts = $this->orderProductModel->getAllByOrderId($userOrder['id']);
             $newOrderProducts = $this->newOrderProducts($orderProducts);
-            foreach ($newOrderProducts as $newOrderProduct)
-            {
-                $newOrderProductsById[$userOrder['id']][] = $newOrderProduct;
-                $userOrder['total'] += $newOrderProduct['totalProduct'];
-            }
+            $userOrder['total'] = $this->totalOrderProducts($newOrderProducts);
+            $userOrder['products'] = $newOrderProducts;
             $newUserOrders[] = $userOrder;
         }
+
         require_once '../Views/user_orders.php';
     }
     public function handleCheckout()
@@ -90,8 +88,7 @@ class OrderController
         if (empty($errors)) {
             $userId = $_SESSION['userId'];
 
-            $orderModel = new Order();
-            $orderId = $orderModel->create($data, $userId);
+            $orderId = $this->orderModel->create($data, $userId);
 
             foreach ($orderProducts as $orderProduct)
             {
@@ -146,10 +143,10 @@ class OrderController
         $newOrderProducts = [];
         foreach ($orderProducts as $orderProduct)
         {
-            $product = $this->productModel->getById($orderProduct['product_id']);
+            $product = $this->productModel->getOneById($orderProduct['product_id']);
             $orderProduct['name'] = $product['name'];
             $orderProduct['price'] = $product['price'];
-            $orderProduct['totalProduct'] = $orderProduct['amount'] * $orderProduct['price'];
+            $orderProduct['totalSum'] = $orderProduct['amount'] * $orderProduct['price'];
             $newOrderProducts[] = $orderProduct;
         }
         return $newOrderProducts;
@@ -159,7 +156,7 @@ class OrderController
         $total = 0;
         foreach ($newOrderProducts as $newOrderProduct)
         {
-            $total += $newOrderProduct['totalProduct'];
+            $total += $newOrderProduct['totalSum'];
         }
         return $total;
     }

@@ -21,7 +21,7 @@ class Order extends Model
         return $dataId['id'];
     }
 
-    public function getAllById($userId): array
+    public function getAllByUserId($userId): array
     {
         $stmt = $this->PDO->prepare('SELECT * FROM orders WHERE user_id = :user_id');
         $stmt->execute(['user_id' => $userId]);

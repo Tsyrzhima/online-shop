@@ -11,7 +11,7 @@ class Product extends Model
         $products = $statement->fetchAll();
         return $products;
     }
-    public function getById(int $productId): array|false
+    public function getOneById(int $productId): array|false
     {
         $statement = $this->PDO->query("SELECT * FROM products WHERE id = $productId");
         $product = $statement->fetch();

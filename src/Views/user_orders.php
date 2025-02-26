@@ -24,12 +24,12 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($newOrderProductsById[$newUserOrder['id']] as $newOrderProduct): ?>
+                        <?php foreach ($newUserOrder['products'] as $newOrderProduct): ?>
                             <tr>
                                 <td><?php echo $newOrderProduct['name']?></td>
                                 <td><?php echo $newOrderProduct['amount']?></td>
                                 <td><?php echo $newOrderProduct['price']?></td>
-                                <td><?php echo $newOrderProduct['totalProduct']?></td>
+                                <td><?php echo $newOrderProduct['totalSum']?></td>
                             </tr>
                         <? endforeach; ?>
                     </tbody>
