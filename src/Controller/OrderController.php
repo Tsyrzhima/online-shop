@@ -138,7 +138,7 @@ class OrderController
         }
         return $errors;
     }
-    public function newOrderProducts(array $orderProducts): array
+    private function newOrderProducts(array $orderProducts): array
     {
         $newOrderProducts = [];
         foreach ($orderProducts as $orderProduct)
@@ -151,7 +151,7 @@ class OrderController
         }
         return $newOrderProducts;
     }
-    public function totalOrderProducts(array $newOrderProducts): int
+    private function totalOrderProducts(array $newOrderProducts): int
     {
         $total = 0;
         foreach ($newOrderProducts as $newOrderProduct)
