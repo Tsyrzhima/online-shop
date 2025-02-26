@@ -40,7 +40,7 @@
                 <label for="amount">Стоимость за 1 шт:</label>
                 <div class="price">₽ <?php echo $newOrderProduct['price']?></div>
                 <label for="totalProduct">Итого:</label>
-                <div class="price">₽ <?php echo $newOrderProduct['totalProduct'];?></div>
+                <div class="price">₽ <?php echo $newOrderProduct['totalSum'];?></div>
             <? endforeach; ?>
             <h2><label for="totalOrder">Заказ на сумму:</label></h2>
             <div class="price">₽ <?php echo $total;?></div>
