@@ -24,11 +24,8 @@ class CartController
             $userProducts = $this->cartModel->getAllProductsById($userId);
             foreach ($userProducts as $userProduct)
             {
-                $product = $productById->getOneById($userProduct['product_id']);
-                $userProduct['name'] = $product['name'];
-                $userProduct['price'] = $product['price'];
-                $userProduct['description'] = $product['description'];
-                $userProduct['image_url'] = $product['image_url'];
+                $product = $productById->getOneById($userProduct->getProductId());
+                $userProduct->setProduct($product);
                 $newUserProducts[] = $userProduct;
             }
             require_once '../Views/cart.php';
@@ -52,7 +49,7 @@ class CartController
             if (empty($errors)) {
                 $product = $this->cartModel->isUserHaveProduct($userId, $data['product_id']);
                 if ($product) {
-                    $amount = $product['amount'] + $data['amount'];
+                    $amount = $product->getAmount() + $data['amount'];
                     $this->cartModel->incrementProductAmount($userId, $data['product_id'], $amount);
                 } else {
                     $this->cartModel->addProduct($userId, $data['product_id'], $data['amount']);

@@ -75,7 +75,7 @@ class UserController
             if (session_status() !== PHP_SESSION_ACTIVE) {
                 session_start();
             }
-            $_SESSION['userId'] = $user['id'];
+            $_SESSION['userId'] = $user->getId();
             header('Location: /catalog');
             exit();
         }
@@ -144,13 +144,12 @@ class UserController
             if (!$user) {
                 $errors['autorization'] = 'email или пароль неверный';
             } else {
-                $passwordDb = $user['password'];
+                $passwordDb = $user->getPassword();
                 if (password_verify($data['password'], $passwordDb)) {
                     if (session_status() !== PHP_SESSION_ACTIVE) {
                         session_start();
                     }
-                    $_SESSION['userId'] = $user['id'];
-                    //setcookie('userId', $user['id']);
+                    $_SESSION['userId'] = $user->getId();
                     header('Location: catalog');
                     exit();
                 } else {
@@ -185,15 +184,15 @@ class UserController
         $flag = false;
 
         if (empty($errors)) {
-            if (!empty($dataNew['name']) && ($data['name'] !== $dataNew['name'])) {
+            if (!empty($dataNew['name']) && ($data->getName() !== $dataNew['name'])) {
                 $this->userModel->updateById($dataNew,'name', $userId);
                 $flag = true;
             }
-            if (!empty($dataNew['email']) && ($data['email'] !== $dataNew['email'])) {
+            if (!empty($dataNew['email']) && ($data->getEmail() !== $dataNew['email'])) {
                 $this->userModel->updateById($dataNew,'email', $userId);
                 $flag = true;
             }
-            if (!empty($dataNew['password']) && (!password_verify($dataNew['password'], $data['password']))) {
+            if (!empty($dataNew['password']) && (!password_verify($dataNew['password'], $data->getPassword()))) {
                 $hashed_password = password_hash($dataNew['password'], PASSWORD_DEFAULT);
                 $dataNew['password'] = $hashed_password;
                 $this->userModel->updateById($dataNew,'password', $userId);
@@ -233,7 +232,7 @@ class UserController
                 } else {
                     $user = $this->userModel->getByEmail($data['email']);
                     if ($user) {
-                        if ($user['id'] !== $userId) {
+                        if ($user->getId() !== $userId) {
                             $errors['email'] = 'пользователь с таким email уже существует';
                         }
                     }

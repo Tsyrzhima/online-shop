@@ -7,11 +7,11 @@
         <?php foreach ($products as $product): ?>
             <div class="product">
                 <form action="/add-product" method="POST">
-                    <img width="200" height="200" src="<?php echo $product['image_url']?>">
-                    <h2><?php echo $product['name']?></h2>
-                    <p><?php echo $product['description']?></p>
-                    <div class="price">₽ <?php echo $product['price']?></div>
-                    <input type="hidden" id="product_id" name="product_id" value = "<?php echo$product['id'];?>"
+                    <img width="200" height="200" src="<?php echo $product->getImageUrl()?>">
+                    <h2><?php echo $product->getName()?></h2>
+                    <p><?php echo $product->getDescription()?></p>
+                    <div class="price">₽ <?php echo $product->getPrice()?></div>
+                    <input type="hidden" id="product_id" name="product_id" value = "<?php echo$product->getId();?>"
                     <?php if(isset($errors['amount'])):?>
                         <label style="color: red"> <?php echo $errors['amount'];?></label>
                     <?php endif;?>

@@ -4,11 +4,11 @@
     <div class="container">
         <?php foreach ($newUserProducts as $newUserProduct): ?>
             <div class="product">
-                <img width="200" height="200" src="<?php echo $newUserProduct['image_url']?>">
-                <h2><?php echo $newUserProduct['name']?></h2>
-                <p><?php echo $newUserProduct['description']?></p>
-                <p><?php echo $newUserProduct['amount']?> штук </p>
-                <div class="price">₽ <?php echo $newUserProduct['price']?></div>
+                <img width="200" height="200" src="<?php echo $newUserProduct->getProduct()->getImageUrl()?>">
+                <h2><?php echo $newUserProduct->getProduct()->getName()?></h2>
+                <p><?php echo $newUserProduct->getProduct()->getDescription()?></p>
+                <p><?php echo $newUserProduct->getAmount()?> штук </p>
+                <div class="price">₽ <?php echo $newUserProduct->getProduct()->getPrice()?></div>
                 <a href="#" class="button">Удалить</a>
             </div>
         <? endforeach; ?>

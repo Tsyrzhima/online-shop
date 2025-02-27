@@ -5,16 +5,79 @@ namespace Model;
 require_once '../Model/Model.php';
 class Product extends Model
 {
+    private int $id;
+    private string $name;
+    private string $description;
+    private int $price;
+    private string $imageUrl;
+    private int $totalSum;
     public function getAll(): array|false
     {
         $statement = $this->PDO->query("SELECT * FROM products");
         $products = $statement->fetchAll();
-        return $products;
+        $newProducts = [];
+        foreach ($products as $product) {
+            $newProducts[] = $this->createObj($product);
+        }
+        return $newProducts;
     }
-    public function getOneById(int $productId): array|false
+    public function getOneById(int $productId): self|null
     {
         $statement = $this->PDO->query("SELECT * FROM products WHERE id = $productId");
         $product = $statement->fetch();
-        return $product;
+        return $this->createObj($product);
     }
+
+    private function createObj(array $product): self|null
+    {
+        if(!$product){
+            return null;
+        }
+
+        $obj = new self();
+        $obj->id = $product['id'];
+        $obj->name = $product['name'];
+        $obj->description = $product['description'];
+        $obj->price = $product['price'];
+        $obj->imageUrl = $product['image_url'];
+
+        return $obj;
+    }
+
+    public function setTotalSum(int $totalSum): void
+    {
+        $this->totalSum = $totalSum;
+    }
+
+    public function getTotalSum(): int
+    {
+        return $this->totalSum;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function getPrice(): int
+    {
+        return $this->price;
+    }
+
+    public function getImageUrl(): string
+    {
+        return $this->imageUrl;
+    }
+
+
 }
