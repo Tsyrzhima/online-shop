@@ -6,18 +6,11 @@ use Controller\ProductController;
 use Controller\CartController;
 use Controller\OrderController;
 
-$autoload = function (string $className)
-{
-    $path = str_replace('\\', '/', $className);
-    $path = "./../$path.php";
-    if (file_exists($path)) {
-        require_once $path;
-        return true;
-    }
-    return false;
-};
+require_once './../Core/Autoloader.php';
 
-spl_autoload_register($autoload);
+$path = dirname(__DIR__);
+
+\Core\Autoloader::register($path);
 
 $app = new App();
 $app->addRoute('/registration', 'GET', UserController::class, 'getRegistrate');
