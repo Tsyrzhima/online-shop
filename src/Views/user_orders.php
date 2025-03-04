@@ -24,12 +24,12 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($newOrderProducts as $newOrderProduct): ?>
+                        <?php foreach ($newUserOrder->getOrderProducts() as $orderProduct): ?>
                             <tr>
-                                <td><?php echo $newOrderProduct->getProduct()->getName()?></td>
-                                <td><?php echo $newOrderProduct->getAmount()?></td>
-                                <td><?php echo $newOrderProduct->getProduct()->getPrice()?></td>
-                                <td><?php echo $newOrderProduct->getProduct()->getTotalSum()?></td>
+                                <td><?php echo $orderProduct->getProduct()->getName()?></td>
+                                <td><?php echo $orderProduct->getAmount()?></td>
+                                <td><?php echo $orderProduct->getProduct()->getPrice()?></td>
+                                <td><?php echo $orderProduct->getProduct()->getTotalSum()?></td>
                             </tr>
                         <? endforeach; ?>
                     </tbody>

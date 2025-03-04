@@ -61,7 +61,8 @@ class OrderController
         foreach ($userOrders as $userOrder) {
             $orderProducts = $this->orderProductModel->getAllByOrderId($userOrder->getId());
             $newOrderProducts = $this->newOrderProducts($orderProducts);
-            $userOrder->setTotal($this->totalOrderProducts($newOrderProducts));
+            $userOrder->setOrderProducts($newOrderProducts);
+            $userOrder->setTotal($this->totalOrderProducts($orderProducts));
             $newUserOrders[] = $userOrder;
         }
 

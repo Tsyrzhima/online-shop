@@ -10,8 +10,8 @@ class Order extends Model
     private string $comment;
     private int $userId;
     private string $address;
-    private Product $product;
     private int $total;
+    private array $orderProducts;
     public function create(array $data, int $userId): int
     {
         $stmt = $this->PDO->prepare(
@@ -58,16 +58,6 @@ class Order extends Model
         return $obj;
     }
 
-    public function getProduct(): Product
-    {
-        return $this->product;
-    }
-
-    public function setProduct(Product $product): void
-    {
-        $this->product = $product;
-    }
-
     public function getId(): int
     {
         return $this->id;
@@ -107,5 +97,16 @@ class Order extends Model
     {
         $this->total = $total;
     }
+
+    public function getOrderProducts(): array
+    {
+        return $this->orderProducts;
+    }
+
+    public function setOrderProducts(array $orderProducts): void
+    {
+        $this->orderProducts = $orderProducts;
+    }
+
 
 }
