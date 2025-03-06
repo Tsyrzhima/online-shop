@@ -11,6 +11,7 @@ class Product extends Model
     private int $price;
     private string $imageUrl;
     private int $totalSum;
+    private int $amount;
     public function getAll(): array|false
     {
         $statement = $this->PDO->query("SELECT * FROM products");
@@ -77,6 +78,16 @@ class Product extends Model
     public function getImageUrl(): string
     {
         return $this->imageUrl;
+    }
+
+    public function getAmount(): int
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(int $amount)
+    {
+        $this->amount = $amount;
     }
 
 

@@ -1,29 +1,31 @@
-<form action="/add-product" method="POST">
-    <a href="/profile">Мой профиль</a>
-    <a href="/cart">Корзина продуктов</a>
-    <a href="/user-orders">Мои заказы</a>
-    <h1 style="color: #04AA6D">Товары нашего магазина</h1>
-    <div class="container">
-        <?php foreach ($products as $product): ?>
-            <div class="product">
+<a href="/profile">Мой профиль</a>
+<a href="/cart">Корзина продуктов</a>
+<a href="/user-orders">Мои заказы</a>
+<h1 style="color: #04AA6D">Товары нашего магазина</h1>
+<div class="container">
+    <?php foreach ($products as $product): ?>
+        <div class="product">
+            <img width="200" height="200" src="<?php echo $product->getImageUrl()?>">
+            <h2><?php echo $product->getName()?></h2>
+            <p><?php echo $product->getDescription()?></p>
+            <div class="price">₽ <?php echo $product->getPrice()?></div>
+            <p>кол-во <?php echo $product->getAmount()?> шт</p>
+            <div class="form-container">
                 <form action="/add-product" method="POST">
-                    <img width="200" height="200" src="<?php echo $product->getImageUrl()?>">
-                    <h2><?php echo $product->getName()?></h2>
-                    <p><?php echo $product->getDescription()?></p>
-                    <div class="price">₽ <?php echo $product->getPrice()?></div>
-                    <input type="hidden" id="product_id" name="product_id" value = "<?php echo$product->getId();?>"
-                    <?php if(isset($errors['amount'])):?>
-                        <label style="color: red"> <?php echo $errors['amount'];?></label>
-                    <?php endif;?>
-                    <label for="amount"><b>кол-во</b></label>
-                    <input type="text" id="amount" name="amount"?>
-                    <button type = "submit" class="button">Добавить в корзину</button>
+                    <input type="hidden" id="product_id" name="product_id" value = "<?php echo$product->getId();?>">
+                    <input type="hidden" id="amount" name="amount" value = 1>
+                    <button type = "submit" class="button">+</button>
+                </form>
+                <form action="/decreace-product" method="POST">
+                    <input type="hidden" id="product_id" name="product_id" value = "<?php echo$product->getId();?>">
+                    <input type="hidden" id="amount" name="amount" value = 1>
+                    <button type = "submit" class="button">-</button>
                 </form>
             </div>
-        <? endforeach; ?>
-        <a href="/profile.php"Мой профиль</a>
-    </div>
-</form>
+        </div>
+    <? endforeach; ?>
+</div>
+
 
 <style>
     input[type=text], input[type=password] {
@@ -96,6 +98,13 @@
 
     .button:hover {
         background: #04AA6D;
+    }
+    .form-container {
+        display: flex;
+        align-items: center; /* Центрирует элементы по вертикали */
+    }
+    .form-container form {
+        margin-right: 10px; /* Отступ между формами */
     }
 
 </style>

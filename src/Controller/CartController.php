@@ -5,23 +5,21 @@ namespace Controller;
 use Model\Cart;
 use Model\Product;
 
-class CartController
+class CartController extends BaseController
 {
     private Cart $cartModel;
     public function __construct()
     {
+        parent::__construct();
         $this->cartModel = new Cart();
     }
     public function getCart()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        if (isset($_SESSION['userId'])) {
-            $userId = $_SESSION['userId'];
+        if ($this->authService->check()) {
+            $user = $this->authService->getCurrentUser();
             $productById = new Product();
             $newUserProducts = [];
-            $userProducts = $this->cartModel->getAllProductsById($userId);
+            $userProducts = $this->cartModel->getAllUserProductsByUserId($user->getId());
             foreach ($userProducts as $userProduct)
             {
                 $product = $productById->getOneById($userProduct->getProductId());
@@ -34,25 +32,19 @@ class CartController
             exit();
         }
     }
-
     public function addProductToCart()
     {
-
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        if (isset($_SESSION['userId'])) {
-
-            $userId = $_SESSION['userId'];
+        if ($this->authService->check()) {
+            $user = $this->authService->getCurrentUser();
             $data = $_POST;
             $errors = $this->validate($data);
             if (empty($errors)) {
-                $product = $this->cartModel->isUserHaveProduct($userId, $data['product_id']);
+                $product = $this->cartModel->isUserHaveProduct($user->getId(), $data['product_id']);
                 if ($product) {
                     $amount = $product->getAmount() + $data['amount'];
-                    $this->cartModel->incrementProductAmount($userId, $data['product_id'], $amount);
+                    $this->cartModel->changeProductAmount($user->getId(), $data['product_id'], $amount);
                 } else {
-                    $this->cartModel->addProduct($userId, $data['product_id'], $data['amount']);
+                    $this->cartModel->addProduct($user->getId(), $data['product_id'], $data['amount']);
                 }
             }
             header('Location: /catalog');
@@ -61,7 +53,29 @@ class CartController
             exit();
         }
     }
-
+    public function decreaceProductFromCart()
+    {
+        if ($this->authService->check()) {
+            $user = $this->authService->getCurrentUser();
+            $data = $_POST;
+            $errors = $this->validate($data);
+            if (empty($errors)) {
+                $product = $this->cartModel->isUserHaveProduct($user->getId(), $data['product_id']);
+                if ($product) {
+                    if($product->getAmount() > 1){
+                        $amount = $product->getAmount() - $data['amount'];
+                        $this->cartModel->changeProductAmount($user->getId(), $data['product_id'], $amount);
+                    }elseif ($product->getAmount() === 1){
+                        $this->cartModel->deleteProduct($user->getId(), $data['product_id']);
+                    }
+                }
+            }
+            header('Location: /catalog');
+        } else {
+            header('Location: /login');
+            exit();
+        }
+    }
     private function validate(array $data): array
     {
         $errors = [];

@@ -25,6 +25,7 @@ $app->post('/profile', UserController::class, 'profile');
 $app->get('/cart', CartController::class, 'getCart');
 $app->post('/cart', CartController::class, 'addProduct');
 $app->post('/add-product', CartController::class, 'addProductToCart');
+$app->post('/decreace-product', CartController::class, 'decreaceProductFromCart');
 $app->get('/logout', UserController::class, 'logout');
 $app->get('/create-order', OrderController::class, 'getCheckoutForm');
 $app->post('/create-order', OrderController::class, 'handleCheckout');

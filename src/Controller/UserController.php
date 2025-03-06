@@ -4,19 +4,17 @@ namespace Controller;
 
 use Model\User;
 
-class UserController
+class UserController extends BaseController
 {
     private User $userModel;
     public function __construct()
     {
+        parent::__construct();
         $this->userModel = new User();
     }
     public function getRegistrate()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        if (isset($_SESSION['userId'])) {
+        if($this->authService->check()) {
             header('Location: /catalog');
             exit();
         }else {
@@ -26,10 +24,7 @@ class UserController
 
     public function getLogin()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        if (isset($_SESSION['userId'])) {
+        if ($this->authService->check()) {
             header('Location: /catalog');
             exit();
         } else {
@@ -39,10 +34,7 @@ class UserController
 
     public function getEditProfile()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        if (!isset($_SESSION['userId'])) {
+       if (!$this->authService->check()) {
             header('Location: /login');
             exit();
         } else {
@@ -52,10 +44,7 @@ class UserController
 
     public function getProfile()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        if (!isset($_SESSION['userId'])) {
+        if (!$this->authService->check()) {
             header('Location: /login');
             exit();
         } else {
@@ -71,17 +60,86 @@ class UserController
         if (empty($errors)) {
             $hashed_password = password_hash($data['password'], PASSWORD_DEFAULT);
             $this->userModel->registrate($data['name'], $data['email'], $hashed_password);
-            $user = $this->userModel->getByEmail($data['email']);
-            if (session_status() !== PHP_SESSION_ACTIVE) {
-                session_start();
-            }
-            $_SESSION['userId'] = $user->getId();
             header('Location: /catalog');
             exit();
         }
         require_once '../Views/registration_form.php';
     }
 
+    public function login()
+    {
+        $data = $_POST;
+        $errors = $this->validateLogin($data);
+
+        if (empty($errors)) {
+            $result = $this->authService->auth($data['email'], $data['password']);
+            if ($result) {
+                header('Location: catalog');
+                exit();
+            } else {
+                $errors['autorization'] = 'email или пароль неверный';
+            }
+        }
+        require_once '../Views/login_form.php';
+    }
+
+    public function editProfile()
+    {
+        $user = $this->authService->getCurrentUser();
+        $userId = $user->getId();
+        $dataNew = $_POST;
+        $errors = $this->validateEditProfile($dataNew, $userId);
+        $flag = false;
+
+        if (empty($errors)) {
+            if (!empty($dataNew['name']) && ($user->getName() !== $dataNew['name'])) {
+                $this->userModel->updateById($dataNew,'name', $userId);
+                $flag = true;
+            }
+            if (!empty($dataNew['email']) && ($user->getEmail() !== $dataNew['email'])) {
+                $this->userModel->updateById($dataNew,'email', $userId);
+                $flag = true;
+            }
+            if (!empty($dataNew['password']) && (!password_verify($dataNew['password'], $user->getPassword()))) {
+                $hashed_password = password_hash($dataNew['password'], PASSWORD_DEFAULT);
+                $dataNew['password'] = $hashed_password;
+                $this->userModel->updateById($dataNew,'password', $userId);
+                $flag = true;
+            }
+            if ($flag) {
+                header('Location: profile');
+                exit();
+            }
+        }
+        require_once '../Views/edit_profile_form.php';
+    }
+    public function profile()
+    {
+        if (!$this->authService->check()) {
+            header('Location: login');
+            exit();
+        } else {
+            $user = $this->authService->getCurrentUser();
+            require_once '../Views/profile_form.php';
+        }
+    }
+    public function logout()
+    {
+        $this->authService->logout();
+        header('Location: /login');
+        exit();
+    }
+    private function validateLogin(array $data): array
+    {
+        $errors = [];
+        if (!isset($data['email'])) {
+            $errors['email'] = 'Введите email';
+        }
+        if (!isset($data['password'])) {
+            $errors['password'] = 'Введите пароль';
+        }
+        return $errors;
+    }
     private function validateRegistrate(array $data): array
     {
         $errors = [];
@@ -133,79 +191,6 @@ class UserController
         }
         return $errors;
     }
-
-    public function login()
-    {
-        $data = $_POST;
-        $errors = $this->validateLogin($data);
-
-        if (empty($errors)) {
-            $user = $this->userModel->getByEmail($data['email']);
-            if (!$user) {
-                $errors['autorization'] = 'email или пароль неверный';
-            } else {
-                $passwordDb = $user->getPassword();
-                if (password_verify($data['password'], $passwordDb)) {
-                    if (session_status() !== PHP_SESSION_ACTIVE) {
-                        session_start();
-                    }
-                    $_SESSION['userId'] = $user->getId();
-                    header('Location: catalog');
-                    exit();
-                } else {
-                    $errors['autorization'] = 'email или пароль неверный';
-                }
-            }
-        }
-        require_once '../Views/login_form.php';
-    }
-
-    private function validateLogin(array $data): array
-    {
-        $errors = [];
-        if (!isset($data['email'])) {
-            $errors['email'] = 'Введите email';
-        }
-        if (!isset($data['password'])) {
-            $errors['password'] = 'Введите пароль';
-        }
-        return $errors;
-    }
-
-    public function editProfile()
-    {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        $userId = $_SESSION['userId'];
-        $data = $this->userModel->getById($userId);
-        $dataNew = $_POST;
-        $errors = $this->validateEditProfile($dataNew, $userId);
-        $flag = false;
-
-        if (empty($errors)) {
-            if (!empty($dataNew['name']) && ($data->getName() !== $dataNew['name'])) {
-                $this->userModel->updateById($dataNew,'name', $userId);
-                $flag = true;
-            }
-            if (!empty($dataNew['email']) && ($data->getEmail() !== $dataNew['email'])) {
-                $this->userModel->updateById($dataNew,'email', $userId);
-                $flag = true;
-            }
-            if (!empty($dataNew['password']) && (!password_verify($dataNew['password'], $data->getPassword()))) {
-                $hashed_password = password_hash($dataNew['password'], PASSWORD_DEFAULT);
-                $dataNew['password'] = $hashed_password;
-                $this->userModel->updateById($dataNew,'password', $userId);
-                $flag = true;
-            }
-            if ($flag) {
-                header('Location: profile');
-                exit();
-            }
-        }
-        require_once '../Views/edit_profile_form.php';
-    }
-
     private function validateEditProfile(array $data, int $userId): array
     {
         $errors = [];
@@ -263,27 +248,4 @@ class UserController
         return $errors;
     }
 
-    public function profile()
-    {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        if (!isset($_SESSION['userId'])) {
-            header('Location: login');
-            exit();
-        } else {
-            $userId = $_SESSION['userId'];
-            $data = $this->userModel->getById($userId);
-            require_once '../Views/profile_form.php';
-        }
-    }
-    public function logout()
-    {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        session_destroy();
-        header('Location: /login');
-        exit();
-    }
 }

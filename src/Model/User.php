@@ -21,7 +21,9 @@ class User extends Model
         $statement = $this->PDO->prepare("SELECT * FROM users WHERE email = :email");
         $statement->execute(['email' => $email]);
         $user = $statement->fetch();
-
+        if(!$user){
+            return null;
+        }
         return $this->createObj($user);
     }
 
@@ -29,7 +31,9 @@ class User extends Model
     {
         $statement = $this->PDO->query("SELECT * FROM users WHERE id = $userId");
         $user = $statement->fetch();
-
+        if(!$user){
+            return null;
+        }
         return $this->createObj($user);
 
     }
@@ -42,17 +46,16 @@ class User extends Model
 
     private function createObj(array $user): self|null
     {
-        if(!$user){
-            return null;
-        }
-
         $obj = new self();
         $obj->id = $user['id'];
         $obj->name = $user['name'];
         $obj->email = $user['email'];
         $obj->password = $user['password'];
-        $obj->avatarUrl = $user['avatar_url'];
-
+        if(isset($user['avatarUrl'])){
+            $obj->avatarUrl = $user['avatarUrl'];
+        }else{
+            $obj->avatarUrl = 'default_avatar.png';
+        }
         return $obj;
     }
 
@@ -76,7 +79,7 @@ class User extends Model
         return $this->password;
     }
 
-    public function getAvatarUrl(): string
+    public function getAvatarUrl(): ?string
     {
         return $this->avatarUrl;
     }

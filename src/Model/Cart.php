@@ -9,7 +9,7 @@ class Cart extends Model
     private int $productId;
     private int $amount;
     private Product $product;
-    public function getAllProductsById(int $userId): array|false
+    public function getAllUserProductsByUserId(int $userId): array|false
     {
         $statement = $this->PDO->query("SELECT * FROM user_products WHERE user_id = $userId");
         $userProducts = $statement->fetchAll();
@@ -29,7 +29,7 @@ class Cart extends Model
         return null;
 
     }
-    public function incrementProductAmount(int $userId, int $productId, int $amount)
+    public function changeProductAmount(int $userId, int $productId, int $amount)
     {
         $statement = $this->PDO->prepare("UPDATE user_products SET amount = :amount WHERE product_id = $productId AND user_id = $userId");
         $statement->execute(['amount' => $amount]);
@@ -39,12 +39,16 @@ class Cart extends Model
         $statement = $this->PDO->prepare("INSERT INTO user_products (user_id, product_id, amount) VALUES ($userId, $productId, :amount)");
         $statement->execute(['amount' => $amount]);
     }
+    public function deleteProduct(int $userId, int $productId)
+    {
+        $statement = $this->PDO->prepare("DELETE FROM user_products WHERE user_id = :userId AND product_id = :productId");
+        $statement->execute(['userId' => $userId, 'productId' => $productId]);
+    }
     public function deleteByUserId(int $userId)
     {
         $statement = $this->PDO->prepare("DELETE FROM user_products WHERE user_id = :userId");
         $statement->execute(['userId' => $userId]);
     }
-
     private function createObj(array $product): self|null
     {
         if(!$product){
@@ -59,7 +63,6 @@ class Cart extends Model
 
         return $obj;
     }
-
     public function getId(): int
     {
         return $this->id;
