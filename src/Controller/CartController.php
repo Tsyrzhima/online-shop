@@ -2,16 +2,16 @@
 
 namespace Controller;
 
-use Model\Cart;
+use Model\UserProduct;
 use Model\Product;
 
 class CartController extends BaseController
 {
-    private Cart $cartModel;
+    private UserProduct $userProductModel;
     public function __construct()
     {
         parent::__construct();
-        $this->cartModel = new Cart();
+        $this->userProductModel = new UserProduct();
     }
     public function getCart()
     {
@@ -19,7 +19,7 @@ class CartController extends BaseController
             $user = $this->authService->getCurrentUser();
             $productById = new Product();
             $newUserProducts = [];
-            $userProducts = $this->cartModel->getAllUserProductsByUserId($user->getId());
+            $userProducts = $this->userProductModel->getAllUserProductsByUserId($user->getId());
             foreach ($userProducts as $userProduct)
             {
                 $product = $productById->getOneById($userProduct->getProductId());
@@ -39,12 +39,12 @@ class CartController extends BaseController
             $data = $_POST;
             $errors = $this->validate($data);
             if (empty($errors)) {
-                $product = $this->cartModel->isUserHaveProduct($user->getId(), $data['product_id']);
+                $product = $this->userProductModel->isUserHaveProduct($user->getId(), $data['product_id']);
                 if ($product) {
                     $amount = $product->getAmount() + $data['amount'];
-                    $this->cartModel->changeProductAmount($user->getId(), $data['product_id'], $amount);
+                    $this->userProductModel->changeProductAmount($user->getId(), $data['product_id'], $amount);
                 } else {
-                    $this->cartModel->addProduct($user->getId(), $data['product_id'], $data['amount']);
+                    $this->userProductModel->addProduct($user->getId(), $data['product_id'], $data['amount']);
                 }
             }
             header('Location: /catalog');
@@ -60,13 +60,13 @@ class CartController extends BaseController
             $data = $_POST;
             $errors = $this->validate($data);
             if (empty($errors)) {
-                $product = $this->cartModel->isUserHaveProduct($user->getId(), $data['product_id']);
+                $product = $this->userProductModel->isUserHaveProduct($user->getId(), $data['product_id']);
                 if ($product) {
                     if($product->getAmount() > 1){
                         $amount = $product->getAmount() - $data['amount'];
-                        $this->cartModel->changeProductAmount($user->getId(), $data['product_id'], $amount);
+                        $this->userProductModel->changeProductAmount($user->getId(), $data['product_id'], $amount);
                     }elseif ($product->getAmount() === 1){
-                        $this->cartModel->deleteProduct($user->getId(), $data['product_id']);
+                        $this->userProductModel->deleteProduct($user->getId(), $data['product_id']);
                     }
                 }
             }

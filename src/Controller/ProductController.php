@@ -2,7 +2,7 @@
 
 namespace Controller;
 
-use Model\Cart;
+use Model\UserProduct;
 use Model\Product;
 
 class ProductController extends BaseController
@@ -13,9 +13,9 @@ class ProductController extends BaseController
             $user = $this->authService->getCurrentUser();
             $productModel = new Product();
             $products = $productModel->getAll();
-            $cartModel = new Cart();
+            $userProductModel = new UserProduct();
             foreach ($products as $product) {
-                $cartProduct = $cartModel->isUserHaveProduct($user->getId(), $product->getId());
+                $cartProduct = $userProductModel->isUserHaveProduct($user->getId(), $product->getId());
                 if($cartProduct){
                     $product->setAmount($cartProduct->getAmount());
                 }else{

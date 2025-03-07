@@ -3,21 +3,21 @@
 namespace Controller;
 
 use Model\OrderProduct;
-use Model\Cart;
+use Model\UserProduct;
 use Model\Product;
 use Model\Order;
 
 
 class OrderController extends BaseController
 {
-    private Cart $cartModel;
+    private UserProduct $userProductModel;
     private Product $productModel;
     private OrderProduct $orderProductModel;
     private Order $orderModel;
     public function __construct()
     {
         parent::__construct();
-        $this->cartModel = new Cart();
+        $this->userProductModel = new UserProduct();
         $this->productModel = new Product();
         $this->orderProductModel = new OrderProduct();
         $this->orderModel = new Order();
@@ -27,7 +27,7 @@ class OrderController extends BaseController
     {
         if ($this->authService->check()) {
             $user = $this->authService->getCurrentUser();
-            $orderProducts = $this->cartModel->getAllUserProductsByUserId($user->getId());
+            $orderProducts = $this->userProductModel->getAllUserProductsByUserId($user->getId());
             if(empty($orderProducts))
             {
                 header('Location: /catalog');
@@ -73,7 +73,7 @@ class OrderController extends BaseController
         $data = $_POST;
         $errors = $this->validate($data);
         $user = $this->authService->getCurrentUser();
-        $orderProducts = $this->cartModel->getAllUserProductsByUserId($user->getId());
+        $orderProducts = $this->userProductModel->getAllUserProductsByUserId($user->getId());
         $newOrderProducts = $this->newOrderProducts($orderProducts);
         $total = $this->totalOrderProducts($newOrderProducts);
 
@@ -83,7 +83,7 @@ class OrderController extends BaseController
             {
                 $this->orderProductModel->create($orderId, $orderProduct->getProductId(), $orderProduct->getAmount());
             }
-            $this->cartModel->deleteByUserId($user->getId());
+            $this->userProductModel->deleteByUserId($user->getId());
             header('Location: /user-orders');
             exit();
         }else{
