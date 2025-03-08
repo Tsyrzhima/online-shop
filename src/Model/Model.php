@@ -4,7 +4,7 @@ namespace Model;
 
 use PDO;
 
-class Model
+abstract class Model
 {
     protected PDO $PDO;
 
@@ -12,4 +12,5 @@ class Model
     {
         $this->PDO = new PDO('pgsql:host=db;dbname=mydb', 'user', 'pwd');
     }
+    abstract protected function getTableName(): string;
 }

@@ -14,9 +14,14 @@ class Review extends Model
     private string $reviewComment;
     private string $name;
 
+    public function getTableName(): string
+    {
+        return 'reviews';
+    }
+
     public function getAllByProductId(int $productId): array|null
     {
-        $statement = $this->PDO->query("SELECT * FROM reviews WHERE product_id = $productId");
+        $statement = $this->PDO->query("SELECT * FROM {$this->getTableName()} WHERE product_id = $productId");
         $reviews = $statement->fetchAll();
         $newReviews = [];
         foreach ($reviews as $review) {
@@ -28,7 +33,7 @@ class Review extends Model
     {
         $stmt = $this->PDO->prepare
         (
-            "INSERT INTO reviews(product_id, user_id, date, rating, review_comment)
+            "INSERT INTO {$this->getTableName()}(product_id, user_id, date, rating, review_comment)
                         VALUES (:product_id, :user_id, :date, :rating, :review_comment)"
         );
         $stmt->execute(['product_id' => $productId,
@@ -38,6 +43,7 @@ class Review extends Model
                         'review_comment' => $reviewComment
                         ]);
     }
+
     private function createObj(array $review): self|null
     {
         if(!$review){
@@ -53,75 +59,38 @@ class Review extends Model
 
         return $obj;
     }
+
     public function getId(): int
     {
         return $this->id;
     }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
     public function getProductId(): int
     {
         return $this->productId;
     }
-
-    public function setProductId(int $productId): void
-    {
-        $this->productId = $productId;
-    }
-
     public function getUserId(): int
     {
         return $this->userId;
     }
-
-    public function setUserId(int $userId): void
-    {
-        $this->userId = $userId;
-    }
-
     public function getDate(): string
     {
         return $this->date;
     }
-
-    public function setDate(string $date): void
-    {
-        $this->date = $date;
-    }
-
     public function getRating(): int
     {
         return $this->rating;
     }
-
-    public function setRating(int $rating): void
-    {
-        $this->rating = $rating;
-    }
-
     public function getReviewComment(): string
     {
         return $this->reviewComment;
     }
-
-    public function setReviewComment(string $reviewComment): void
-    {
-        $this->reviewComment = $reviewComment;
-    }
-
     public function getName(): string
     {
         return $this->name;
     }
-
     public function setName(string $name): void
     {
         $this->name = $name;
     }
-
 
 }

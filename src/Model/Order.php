@@ -12,10 +12,16 @@ class Order extends Model
     private string $address;
     private int $total;
     private array $orderProducts;
+
+    public function getTableName(): string
+    {
+        return 'orders';
+    }
+
     public function create(array $data, int $userId): int
     {
         $stmt = $this->PDO->prepare(
-            "INSERT INTO orders (contact_name, contact_phone, comment, user_id, address)
+            "INSERT INTO {$this->getTableName()} (contact_name, contact_phone, comment, user_id, address)
                     VALUES (:name, :phone, :comment, :user_id, :address) RETURNING id"
         );
         $stmt->execute([
@@ -28,10 +34,9 @@ class Order extends Model
         $dataId = $stmt->fetch();
         return $dataId['id'];
     }
-
     public function getAllByUserId(int $userId): array
     {
-        $stmt = $this->PDO->prepare('SELECT * FROM orders WHERE user_id = :user_id');
+        $stmt = $this->PDO->prepare("SELECT * FROM {$this->getTableName()} WHERE user_id = :user_id");
         $stmt->execute(['user_id' => $userId]);
         $userOrders = $stmt->fetchAll();
         $newUserOrders = [];
@@ -62,51 +67,41 @@ class Order extends Model
     {
         return $this->id;
     }
-
     public function getContactName(): string
     {
         return $this->contactName;
     }
-
     public function getContactPhone(): string
     {
         return $this->contactPhone;
     }
-
     public function getComment(): string
     {
         return $this->comment;
     }
-
     public function getUserId(): int
     {
         return $this->userId;
     }
-
     public function getAddress(): string
     {
         return $this->address;
     }
-
     public function getTotal(): int
     {
         return $this->total;
     }
-
     public function setTotal(int $total): void
     {
         $this->total = $total;
     }
-
     public function getOrderProducts(): array
     {
         return $this->orderProducts;
     }
-
     public function setOrderProducts(array $orderProducts): void
     {
         $this->orderProducts = $orderProducts;
     }
-
 
 }

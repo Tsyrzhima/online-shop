@@ -11,17 +11,22 @@ class OrderProduct extends Model
     private Product $product;
     private int $total;
 
+    public function getTableName(): string
+    {
+        return 'order_products';
+    }
+
     public function create(int $orderId, int $productId, int $amount)
     {
         $stmt = $this->PDO->prepare
         (
-            "INSERT INTO order_products(order_id, product_id, amount) VALUES (:order_id, :product_id, :amount)"
+            "INSERT INTO {$this->getTableName()} (order_id, product_id, amount) VALUES (:order_id, :product_id, :amount)"
         );
         $stmt->execute(['order_id' => $orderId, 'product_id' => $productId, 'amount' => $amount]);
     }
     public function getAllByOrderId(int $orderId): array|false
     {
-        $stmt = $this->PDO->prepare("SELECT * FROM order_products WHERE order_id = :orderId");
+        $stmt = $this->PDO->prepare("SELECT * FROM {$this->getTableName()} WHERE order_id = :orderId");
         $stmt->execute(['orderId' => $orderId]);
         $orderProducts = $stmt->fetchAll();
         $newOrderProducts = [];
@@ -31,26 +36,6 @@ class OrderProduct extends Model
         }
 
         return $newOrderProducts;
-    }
-
-    public function setProduct(Product $product)
-    {
-        $this->product = $product;
-    }
-
-    public function getProduct(): Product
-    {
-        return $this->product;
-    }
-
-    public function getTotal(): int
-    {
-        return $this->total;
-    }
-
-    public function setTotal(int $total): void
-    {
-        $this->total = $total;
     }
 
     private function createObj(array $orderProduct): self|null
@@ -68,25 +53,37 @@ class OrderProduct extends Model
         return $obj;
     }
 
+    public function setProduct(Product $product)
+    {
+        $this->product = $product;
+    }
+    public function getProduct(): Product
+    {
+        return $this->product;
+    }
+    public function getTotal(): int
+    {
+        return $this->total;
+    }
+    public function setTotal(int $total): void
+    {
+        $this->total = $total;
+    }
     public function getId(): int
     {
         return $this->id;
     }
-
     public function getOrderId(): int
     {
         return $this->orderId;
     }
-
     public function getProductId(): int
     {
         return $this->productId;
     }
-
     public function getAmount(): int
     {
         return $this->amount;
     }
-
 
 }

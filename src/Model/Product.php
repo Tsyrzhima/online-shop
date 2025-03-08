@@ -14,9 +14,15 @@ class Product extends Model
     private int $amount;
     private float $rating;
     private int $count;
+
+    public function getTableName(): string
+    {
+        return 'products';
+    }
+
     public function getAll(): array|false
     {
-        $statement = $this->PDO->query("SELECT * FROM products");
+        $statement = $this->PDO->query("SELECT * FROM {$this->getTableName()}");
         $products = $statement->fetchAll();
         $newProducts = [];
         foreach ($products as $product) {
@@ -26,7 +32,7 @@ class Product extends Model
     }
     public function getOneById(int $productId): self|null
     {
-        $statement = $this->PDO->query("SELECT * FROM products WHERE id = $productId");
+        $statement = $this->PDO->query("SELECT * FROM {$this->getTableName()} WHERE id = $productId");
         $product = $statement->fetch();
         return $this->createObj($product);
     }
@@ -51,32 +57,26 @@ class Product extends Model
     {
         $this->totalSum = $totalSum;
     }
-
     public function getTotalSum(): int
     {
         return $this->totalSum;
     }
-
     public function getId(): int
     {
         return $this->id;
     }
-
     public function getName(): string
     {
         return $this->name;
     }
-
     public function getDescription(): string
     {
         return $this->description;
     }
-
     public function getPrice(): int
     {
         return $this->price;
     }
-
     public function getImageUrl(): string
     {
         return $this->imageUrl;

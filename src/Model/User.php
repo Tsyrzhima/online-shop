@@ -10,15 +10,19 @@ class User extends Model
     private string $password;
     private string $avatarUrl;
 
-    public function registrate(string $name, string $email, string $hashed_password)
+    public function getTableName(): string
     {
-        $statement = $this->PDO->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :hashed_password)");
-        $statement->execute(['name' => $name, 'email' => $email, 'hashed_password' => $hashed_password]);
+        return 'users';
     }
 
+    public function registrate(string $name, string $email, string $hashed_password)
+    {
+        $statement = $this->PDO->prepare("INSERT INTO {$this->getTableName()} (name, email, password) VALUES (:name, :email, :hashed_password)");
+        $statement->execute(['name' => $name, 'email' => $email, 'hashed_password' => $hashed_password]);
+    }
     public function getByEmail(string $email): self|null
     {
-        $statement = $this->PDO->prepare("SELECT * FROM users WHERE email = :email");
+        $statement = $this->PDO->prepare("SELECT * FROM {$this->getTableName()} WHERE email = :email");
         $statement->execute(['email' => $email]);
         $user = $statement->fetch();
         if(!$user){
@@ -26,10 +30,9 @@ class User extends Model
         }
         return $this->createObj($user);
     }
-
     public function getById(int $userId): self|null
     {
-        $statement = $this->PDO->query("SELECT * FROM users WHERE id = $userId");
+        $statement = $this->PDO->query("SELECT * FROM {$this->getTableName()} WHERE id = $userId");
         $user = $statement->fetch();
         if(!$user){
             return null;
@@ -37,10 +40,9 @@ class User extends Model
         return $this->createObj($user);
 
     }
-
     public function updateById(array $dataNew, string $column, int $userId)
     {
-        $statement = $this->PDO->prepare("UPDATE users SET {$column} = :{$column} WHERE id = :id");
+        $statement = $this->PDO->prepare("UPDATE {$this->getTableName()} SET {$column} = :{$column} WHERE id = :id");
         $statement->execute(['id' => $userId, "{$column}" => $dataNew["{$column}"]]);
     }
 
@@ -63,22 +65,18 @@ class User extends Model
     {
         return $this->id;
     }
-
     public function getName(): string
     {
         return $this->name;
     }
-
     public function getEmail(): string
     {
         return $this->email;
     }
-
     public function getPassword(): string
     {
         return $this->password;
     }
-
     public function getAvatarUrl(): ?string
     {
         return $this->avatarUrl;
