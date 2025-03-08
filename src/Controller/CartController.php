@@ -4,14 +4,17 @@ namespace Controller;
 
 use Model\UserProduct;
 use Model\Product;
+use Service\CartService;
 
 class CartController extends BaseController
 {
     private UserProduct $userProductModel;
+    private CartService $cartService;
     public function __construct()
     {
         parent::__construct();
         $this->userProductModel = new UserProduct();
+        $this->cartService = new CartService();
     }
     public function getCart()
     {
@@ -39,13 +42,7 @@ class CartController extends BaseController
             $data = $_POST;
             $errors = $this->validate($data);
             if (empty($errors)) {
-                $product = $this->userProductModel->isUserHaveProduct($user->getId(), $data['product_id']);
-                if ($product) {
-                    $amount = $product->getAmount() + $data['amount'];
-                    $this->userProductModel->changeProductAmount($user->getId(), $data['product_id'], $amount);
-                } else {
-                    $this->userProductModel->addProduct($user->getId(), $data['product_id'], $data['amount']);
-                }
+                $this->cartService->addProduct($data['product_id'], $user->getId(), $data['amount']);
             }
             header('Location: /catalog');
         } else {
@@ -60,15 +57,7 @@ class CartController extends BaseController
             $data = $_POST;
             $errors = $this->validate($data);
             if (empty($errors)) {
-                $product = $this->userProductModel->isUserHaveProduct($user->getId(), $data['product_id']);
-                if ($product) {
-                    if($product->getAmount() > 1){
-                        $amount = $product->getAmount() - $data['amount'];
-                        $this->userProductModel->changeProductAmount($user->getId(), $data['product_id'], $amount);
-                    }elseif ($product->getAmount() === 1){
-                        $this->userProductModel->deleteProduct($user->getId(), $data['product_id']);
-                    }
-                }
+                $this->cartService->decreaceProduct($data['product_id'], $user->getId(), $data['amount']);
             }
             header('Location: /catalog');
         } else {

@@ -6,6 +6,7 @@ use Model\OrderProduct;
 use Model\UserProduct;
 use Model\Product;
 use Model\Order;
+use Service\OrderSevice;
 
 
 class OrderController extends BaseController
@@ -14,6 +15,7 @@ class OrderController extends BaseController
     private Product $productModel;
     private OrderProduct $orderProductModel;
     private Order $orderModel;
+    private OrderSevice $orderSevice;
     public function __construct()
     {
         parent::__construct();
@@ -21,6 +23,7 @@ class OrderController extends BaseController
         $this->productModel = new Product();
         $this->orderProductModel = new OrderProduct();
         $this->orderModel = new Order();
+        $this->orderSevice = new OrderSevice();
     }
 
     public function getCheckoutForm()
@@ -78,12 +81,7 @@ class OrderController extends BaseController
         $total = $this->totalOrderProducts($newOrderProducts);
 
         if (empty($errors)) {
-            $orderId = $this->orderModel->create($data, $user->getId());
-            foreach ($orderProducts as $orderProduct)
-            {
-                $this->orderProductModel->create($orderId, $orderProduct->getProductId(), $orderProduct->getAmount());
-            }
-            $this->userProductModel->deleteByUserId($user->getId());
+            $this->orderSevice->create($data, $user->getId(), $orderProducts);
             header('Location: /user-orders');
             exit();
         }else{
