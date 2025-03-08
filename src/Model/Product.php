@@ -12,6 +12,8 @@ class Product extends Model
     private string $imageUrl;
     private int $totalSum;
     private int $amount;
+    private float $rating;
+    private int $count;
     public function getAll(): array|false
     {
         $statement = $this->PDO->query("SELECT * FROM products");
@@ -88,6 +90,26 @@ class Product extends Model
     public function setAmount(int $amount)
     {
         $this->amount = $amount;
+    }
+
+    public function getRating(): float
+    {
+        return $this->rating;
+    }
+
+    public function setRating(float $rating): void
+    {
+        $this->rating = $rating;
+    }
+
+    public function getCount(): int
+    {
+        return $this->count;
+    }
+
+    public function setCount(int $count): void
+    {
+        $this->count = $count;
     }
 
 

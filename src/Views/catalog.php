@@ -21,6 +21,10 @@
                     <input type="hidden" id="amount" name="amount" value = 1>
                     <button type = "submit" class="button">-</button>
                 </form>
+                <form action="/reviews" method="POST">
+                    <input type="hidden" id="product_id" name="product_id" value = "<?php echo$product->getId();?>">
+                    <button type="submit" class="button">Отзывы</button>
+                </form>
             </div>
         </div>
     <? endforeach; ?>

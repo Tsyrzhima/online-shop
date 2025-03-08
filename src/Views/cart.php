@@ -7,7 +7,7 @@
                 <img width="200" height="200" src="<?php echo $newUserProduct->getProduct()->getImageUrl()?>">
                 <h2><?php echo $newUserProduct->getProduct()->getName()?></h2>
                 <p><?php echo $newUserProduct->getProduct()->getDescription()?></p>
-                <p><?php echo $newUserProduct->getAmount()?> штук </p>
+                <p><?php echo $newUserProduct->getAmount()?> шт </p>
                 <div class="price">₽ <?php echo $newUserProduct->getProduct()->getPrice()?></div>
                 <a href="#" class="button">Удалить</a>
             </div>
