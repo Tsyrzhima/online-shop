@@ -17,7 +17,7 @@ class OrderSevice
         $this->orderProductModel = new OrderProduct();
         $this->userProductModel = new UserProduct();
     }
-    public function create(array $data, $userId, array $orderProducts)
+    public function create(array $data, int $userId, array $orderProducts)
     {
         $orderId = $this->orderModel->create($data, $userId);
         foreach ($orderProducts as $orderProduct)

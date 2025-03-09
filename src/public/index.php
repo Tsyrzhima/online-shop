@@ -30,6 +30,6 @@ $app->get('/logout', UserController::class, 'logout');
 $app->get('/create-order', OrderController::class, 'getCheckoutForm');
 $app->post('/create-order', OrderController::class, 'handleCheckout');
 $app->get('/user-orders', OrderController::class, 'getAllOrders');
-$app->post('/reviews', ProductController::class, 'getReviews');
+$app->post('/product', ProductController::class, 'getProduct');
 $app->post('/add-review', ProductController::class, 'addReview');
 $app->run();

@@ -12,7 +12,7 @@ class Review extends Model
     private string $date;
     private int $rating;
     private string $reviewComment;
-    private string $name;
+    private User $user;
 
     public function getTableName(): string
     {
@@ -84,13 +84,13 @@ class Review extends Model
     {
         return $this->reviewComment;
     }
-    public function getName(): string
+    public function getUser(): User
     {
-        return $this->name;
+        return $this->user;
     }
-    public function setName(string $name): void
+    public function setUser(User $user): void
     {
-        $this->name = $name;
+        $this->user = $user;
     }
 
 }

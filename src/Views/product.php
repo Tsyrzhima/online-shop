@@ -24,7 +24,7 @@
                     <?php foreach ($newReviews as $newReview): ?>
                         <div class="review-item">
                             <div class="review-header">
-                                <h2 class="review-author"><?php echo $newReview->getName(); ?></h2>
+                                <h2 class="review-author"><?php echo $newReview->getUser()->getName(); ?></h2>
                                 <div class="review-rating">
                                     <?php if ($newReview->getRating() === 5): ?>
                                         5 звёзд

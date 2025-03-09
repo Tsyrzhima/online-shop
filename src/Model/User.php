@@ -53,11 +53,12 @@ class User extends Model
         $obj->name = $user['name'];
         $obj->email = $user['email'];
         $obj->password = $user['password'];
-        if(isset($user['avatarUrl'])){
-            $obj->avatarUrl = $user['avatarUrl'];
-        }else{
-            $obj->avatarUrl = 'default_avatar.png';
+        if (isset($user['avatar_url'])) {
+            $obj->avatarUrl = $user['avatar_url'];
+        } else {
+            $obj->avatarUrl = null;
         }
+
         return $obj;
     }
 

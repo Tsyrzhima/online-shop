@@ -2,7 +2,9 @@
     <a href="/logout">Выйти</a>
     <div class="container">
         <h1>Ваш профиль</h1>
-        <img width="300" height="300" src="<?php echo $user->getAvatarUrl();?>">
+        <?php if(!empty($user->getAvatarUrl())):?>
+            <img width="300" height="300" src="<?php echo $user->getAvatarUrl();?>">
+        <?php endif;?>
         <hr>
         <label for="name"><b>Имя:</b></label>
         <input type="text" id="name" name="name"
