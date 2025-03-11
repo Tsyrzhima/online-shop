@@ -7,8 +7,8 @@
             <label style="color: red"> <?php echo $errors['name'];?></label>
         <?php endif;?>
         <input type="text" id="name" name="name"
-            <?php if(isset($dataNew['name'])):?>
-                value=<?php echo $dataNew['name'];?>
+            <?php if(!empty($user->getName())):?>
+                value=<?php echo $user->getName();?>
             <?php endif;?>>
 
         <label for="email"><b>Email:</b></label>
@@ -16,8 +16,8 @@
             <label style="color: red"> <?php echo $errors['email'];?></label>
         <?php endif;?>
         <input type="text" id="email" name="email"
-            <?php if(isset($dataNew['email'])):?>
-                value=<?php echo $dataNew['email'];?>
+            <?php if(!empty($user->getEmail())):?>
+                value=<?php echo $user->getEmail();?>
             <?php endif;?>>
 
         <label for="password">Пароль:</label>

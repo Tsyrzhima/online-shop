@@ -40,10 +40,20 @@ class User extends Model
         return $this->createObj($user);
 
     }
-    public function updateById(array $dataNew, string $column, int $userId)
+    public function updateNameById(string $name, int $userId)
     {
-        $statement = $this->PDO->prepare("UPDATE {$this->getTableName()} SET {$column} = :{$column} WHERE id = :id");
-        $statement->execute(['id' => $userId, "{$column}" => $dataNew["{$column}"]]);
+        $statement = $this->PDO->prepare("UPDATE {$this->getTableName()} SET name = :name WHERE id = :id");
+        $statement->execute(['id' => $userId, 'name' => $name]);
+    }
+    public function updateEmailById(string $email, int $userId)
+    {
+        $statement = $this->PDO->prepare("UPDATE {$this->getTableName()} SET email = :email WHERE id = :id");
+        $statement->execute(['id' => $userId, 'email' => $email]);
+    }
+    public function updatePasswordById(string $password, int $userId)
+    {
+        $statement = $this->PDO->prepare("UPDATE {$this->getTableName()} SET password = :password WHERE id = :id");
+        $statement->execute(['id' => $userId, 'password' => $password]);
     }
 
     private function createObj(array $user): self|null
@@ -56,7 +66,7 @@ class User extends Model
         if (isset($user['avatar_url'])) {
             $obj->avatarUrl = $user['avatar_url'];
         } else {
-            $obj->avatarUrl = null;
+            $obj->avatarUrl = 'https://e7.pngegg.com/pngimages/895/969/png-clipart-national-school-of-agricultural-engineering-bordeaux-social-media-avatar-computer-icons-smooth-bending-technology-background-free-down-france-engineering.png';
         }
 
         return $obj;

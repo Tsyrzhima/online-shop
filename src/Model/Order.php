@@ -18,17 +18,17 @@ class Order extends Model
         return 'orders';
     }
 
-    public function create(array $data, int $userId): int
+    public function create(string $name, string $phone, string $comment, string $address, int $userId): int
     {
         $stmt = $this->PDO->prepare(
             "INSERT INTO {$this->getTableName()} (contact_name, contact_phone, comment, user_id, address)
                     VALUES (:name, :phone, :comment, :user_id, :address) RETURNING id"
         );
         $stmt->execute([
-            'name' => $data['name'],
-            'phone' => $data['phone'],
-            'comment' => $data['comment'],
-            'address' => $data['address'],
+            'name' => $name,
+            'phone' => $phone,
+            'comment' => $comment,
+            'address' => $address,
             'user_id' => $userId
         ]);
         $dataId = $stmt->fetch();

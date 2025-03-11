@@ -2,7 +2,8 @@
 
 namespace Service;
 
-use Model\Product;
+use DTO\AddProductToCartDTO;
+use DTO\DecreaceProductFromCartDTO;
 use Model\UserProduct;
 
 class CartService
@@ -12,25 +13,25 @@ class CartService
     {
         $this->userProductModel = new UserProduct();
     }
-    public function addProduct(int $productId, int $userId, int $amount)
+    public function addProduct(AddProductToCartDTO $data)
     {
-        $product = $this->userProductModel->isUserHaveProduct($userId, $productId);
+        $product = $this->userProductModel->isUserHaveProduct($data->getUser()->getId(), $data->getProductId());
         if ($product) {
-            $amount = $product->getAmount() + $amount;
-            $this->userProductModel->changeProductAmount($userId, $productId, $amount);
+            $amount = $product->getAmount() + $data->getAmount();
+            $this->userProductModel->changeProductAmount($data->getUser()->getId(), $data->getProductId(), $amount);
         } else {
-            $this->userProductModel->addProduct($userId, $productId, $amount);
+            $this->userProductModel->addProduct($data->getUser()->getId(), $data->getProductId(), $data->getAmount());
         }
     }
-    public function decreaceProduct(int $productId, int $userId, int $amount)
+    public function decreaceProduct(DecreaceProductFromCartDTO $data)
     {
-        $product = $this->userProductModel->isUserHaveProduct($userId, $productId);
+        $product = $this->userProductModel->isUserHaveProduct($data->getUser()->getId(), $data->getProductId());
         if ($product) {
             if($product->getAmount() > 1){
-                $amount = $product->getAmount() - $amount;
-                $this->userProductModel->changeProductAmount($userId, $productId, $amount);
+                $amount = $product->getAmount() - $data->getAmount();
+                $this->userProductModel->changeProductAmount($data->getUser()->getId(), $data->getProductId(), $amount);
             }elseif ($product->getAmount() === 1){
-                $this->userProductModel->deleteProduct($userId, $productId);
+                $this->userProductModel->deleteProduct($data->getUser()->getId(), $data->getProductId());
             }
         }
     }

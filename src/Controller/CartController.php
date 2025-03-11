@@ -2,8 +2,12 @@
 
 namespace Controller;
 
+use DTO\AddProductToCartDTO;
+use DTO\DecreaceProductFromCartDTO;
 use Model\UserProduct;
 use Model\Product;
+use Request\AddProductToCartRequest;
+use Request\DecreaceProductFromCartRequest;
 use Service\CartService;
 
 class CartController extends BaseController
@@ -35,14 +39,14 @@ class CartController extends BaseController
             exit();
         }
     }
-    public function addProductToCart()
+    public function addProductToCart(AddProductToCartRequest $request)
     {
         if ($this->authService->check()) {
             $user = $this->authService->getCurrentUser();
-            $data = $_POST;
-            $errors = $this->validate($data);
+            $errors = $request->validate();
             if (empty($errors)) {
-                $this->cartService->addProduct($data['product_id'], $user->getId(), $data['amount']);
+                $dto = new AddProductToCartDTO($request->getProductId(), $user, $request->getAmount());
+                $this->cartService->addProduct($dto);
             }
             header('Location: /catalog');
         } else {
@@ -50,14 +54,14 @@ class CartController extends BaseController
             exit();
         }
     }
-    public function decreaceProductFromCart()
+    public function decreaceProductFromCart(DecreaceProductFromCartRequest $request)
     {
         if ($this->authService->check()) {
             $user = $this->authService->getCurrentUser();
-            $data = $_POST;
-            $errors = $this->validate($data);
+            $errors = $request->validate();
             if (empty($errors)) {
-                $this->cartService->decreaceProduct($data['product_id'], $user->getId(), $data['amount']);
+                $dto = new DecreaceProductFromCartDTO($request->getProductId(), $user, $request->getAmount());
+                $this->cartService->decreaceProduct($dto);
             }
             header('Location: /catalog');
         } else {
@@ -65,32 +69,6 @@ class CartController extends BaseController
             exit();
         }
     }
-    private function validate(array $data): array
-    {
-        $errors = [];
 
-        if (isset($data['product_id'])) {
-            if (!is_numeric($data['product_id'])) {
-                $errors['product_id'] = "id продукта может содержать только цифры";
-            } else {
-                $productModel = new Product();
-                $product = $productModel->getOneById($data['product_id']);
-                if (!$product) {
-                    $errors['product_id'] = 'id c таким продуктом не существует';
-                }
-            }
-        } else {
-            $errors['product_id'] = 'Введите id';
-        }
-
-        if (isset($data['amount'])) {
-            if (!is_numeric($data['amount'])) {
-                $errors['amount'] = "количество продукта может содержать только цифры";
-            }
-        } else {
-            $errors['amount'] = 'Введите количество';
-        }
-        return $errors;
-    }
 
 }

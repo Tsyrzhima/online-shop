@@ -2,10 +2,12 @@
 
 namespace Controller;
 
+use DTO\OrderCreateDTO;
 use Model\OrderProduct;
 use Model\UserProduct;
 use Model\Product;
 use Model\Order;
+use Request\HandleCheckoutOrderRequest;
 use Service\OrderSevice;
 
 
@@ -60,28 +62,27 @@ class OrderController extends BaseController
             $orderProducts = $this->orderProductModel->getAllByOrderId($userOrder->getId());
             $newOrderProducts = $this->newOrderProducts($orderProducts);
             $userOrder->setOrderProducts($newOrderProducts);
-            $userOrder->setTotal($this->totalOrderProducts($orderProducts));
+            $userOrder->setTotal($this->totalOrderProducts($newOrderProducts));
             $newUserOrders[] = $userOrder;
         }
 
         require_once '../Views/user_orders.php';
     }
-    public function handleCheckout()
+    public function handleCheckout(HandleCheckoutOrderRequest $request)
     {
         if (!$this->authService->check()) {
             header('Location: /login');
             exit();
         }
-
-        $data = $_POST;
-        $errors = $this->validate($data);
+        $errors = $request->validate();
         $user = $this->authService->getCurrentUser();
         $orderProducts = $this->userProductModel->getAllUserProductsByUserId($user->getId());
         $newOrderProducts = $this->newOrderProducts($orderProducts);
         $total = $this->totalOrderProducts($newOrderProducts);
 
         if (empty($errors)) {
-            $this->orderSevice->create($data, $user->getId(), $orderProducts);
+            $dto = new OrderCreateDTO($request->getName(), $request->getPhone(), $request->getComment(), $request->getAddress(), $user);
+            $this->orderSevice->create($dto);
             header('Location: /user-orders');
             exit();
         }else{
@@ -89,44 +90,10 @@ class OrderController extends BaseController
         }
 
     }
-    private function validate(array $data): array
-    {
-        $errors = [];
 
-        if (isset($data['name'])) {
-            if (strlen($data['name']) < 2) {
-                $errors['name'] = 'Имя пользователя должно быть больше 2 символов';
-            } elseif (!preg_match('/^[a-zA-Zа-яА-Я0-9_\-\.]+$/u', $data['name'])) {
-                $errors['name'] = "Имя пользователя может содержать только буквы, цифры, символы '_', '-', '.'";
-            }
-        } else {
-            $errors['name'] = 'Введите имя';
-        }
-
-        if (isset($data['address'])) {
-            if (!preg_match('/^[\d\s\w\.,-]+$/u', $data['address'])) {
-                $errors['address'] = "Адрес содержит недопустимые символы";
-            }elseif (!preg_match('/[а-яА-ЯёЁ]+\s+\d+/', $data['address'])) {
-                $errors['address'] = "Адрес должен содержать номер дома и улицу";
-            }
-        } else {
-            $errors['address'] = 'Введите адрес';
-        }
-
-        if (isset($data['phone'])) {
-            $cleanedPhone = preg_replace('/\D/', '', $data['phone']);
-            if(strlen($cleanedPhone) < 11) {
-                $errors['phone'] = 'Номер телефона не может быть меньше 11 символов';
-            }elseif (!preg_match('/^\+\d+$/', $data['phone'])) {
-                $errors['phone'] = "Номер телефона должен начинаться с '+' и содержать только цифры после него";
-            }
-        } else {
-            $errors['phone'] = 'Введите имя';
-        }
-        return $errors;
-    }
     private function newOrderProducts(array $orderProducts): array
     {
+
         $newOrderProducts = [];
         foreach ($orderProducts as $orderProduct)
         {
