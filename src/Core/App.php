@@ -13,15 +13,7 @@ use Request\RegistrateRequest;
 class App
 {
     private array $routes = [];
-    private array $requests = [
-        'registrate' => RegistrateRequest::class,
-        'login' => LoginRequest::class,
-        'editProfile' => EditProfileRequest::class,
-        'addProductToCart' => AddProductToCartRequest::class,
-        'decreaceProductFromCart' => DecreaceProductFromCartRequest::class,
-        'handleCheckout' => HandleCheckoutOrderRequest::class,
-        'addReview' => AddReviewRequest::class,
-    ];
+
     public function run()
     {
         $requestUri = $_SERVER['REQUEST_URI'];
@@ -33,24 +25,9 @@ class App
                 $class = $handler['class'];
                 $method = $handler['method'];
                 $controller = new $class();
-                if($requestMethod === 'POST')
-                {
-                    //if (isset($requestClasses[$method])) {
-                    //    $requestClass = $requestClasses[$method];
-                    //    $request = new $requestClass($_POST);
-                    //} else {
-                    //    $request = null;
-                    //}
-                    switch ($method) {
-                        case 'registrate': $request = new RegistrateRequest($_POST); break;
-                        case 'login': $request = new LoginRequest($_POST); break;
-                        case 'editProfile': $request = new EditProfileRequest($_POST); break;
-                        case 'addProductToCart': $request = new AddProductToCartRequest($_POST); break;
-                        case 'decreaceProductFromCart': $request = new DecreaceProductFromCartRequest($_POST); break;
-                        case 'handleCheckout': $request = new HandleCheckoutOrderRequest($_POST); break;
-                        case 'addReview': $request = new AddReviewRequest($_POST); break;
-                        default: $request = null;break;
-                    }
+                $requestClass = $handler['request'];
+                if($requestClass !== null){
+                    $request = new $requestClass($_POST);
                     $controller->$method($request);
                 }else{
                     $controller->$method();
@@ -70,18 +47,20 @@ class App
             'method' => $method,
         ];
     }
-    public function get(string $route, string $className, string $method)
+    public function get(string $route, string $className, string $method, string $requestClass = null)
     {
         $this->routes[$route]['GET'] = [
             'class' => $className,
             'method' => $method,
+            'request' => $requestClass,
         ];
     }
-    public function post(string $route, string $className, string $method)
+    public function post(string $route, string $className, string $method, string $requestClass = null)
     {
         $this->routes[$route]['POST'] = [
             'class' => $className,
             'method' => $method,
+            'request' => $requestClass,
         ];
     }
     public function put(string $route, string $className, string $method)
