@@ -10,7 +10,7 @@ class Order extends Model
     private string $comment;
     private int $userId;
     private string $address;
-    private int $total;
+    private int $sum;
     private array $orderProducts;
 
     public function getTableName(): string
@@ -87,13 +87,13 @@ class Order extends Model
     {
         return $this->address;
     }
-    public function getTotal(): int
+    public function getSum(): int
     {
-        return $this->total;
+        return $this->sum;
     }
-    public function setTotal(int $total): void
+    public function setSum(int $sum): void
     {
-        $this->total = $total;
+        $this->sum = $sum;
     }
     public function getOrderProducts(): array
     {

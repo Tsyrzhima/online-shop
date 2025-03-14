@@ -10,7 +10,6 @@ class Product extends Model
     private string $description;
     private int $price;
     private string $imageUrl;
-    private int $totalSum;
     private int $amount;
     private float $rating;
     private int $count;
@@ -51,15 +50,6 @@ class Product extends Model
         $obj->imageUrl = $product['image_url'];
 
         return $obj;
-    }
-
-    public function setTotalSum(int $totalSum): void
-    {
-        $this->totalSum = $totalSum;
-    }
-    public function getTotalSum(): int
-    {
-        return $this->totalSum;
     }
     public function getId(): int
     {

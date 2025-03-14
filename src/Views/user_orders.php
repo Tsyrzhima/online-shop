@@ -7,13 +7,13 @@
 <a href="/catalog">Каталог продуктов</a>
     <h1>Мои Заказы</h1>
     <div class="order-container">
-        <?php foreach ($newUserOrders as $newUserOrder): ?>
+        <?php foreach ($userOrders as $userOrder): ?>
             <div class="order-card">
-                <h2>Заказ № <?php echo $newUserOrder->getId()?></h2>
-                <p><?php echo $newUserOrder->getContactName()?></p>
-                <p><?php echo $newUserOrder->getContactPhone()?></p>
-                <p><?php echo $newUserOrder->getComment()?></p>
-                <p><?php echo $newUserOrder->getAddress();?></p>
+                <h2>Заказ № <?php echo $userOrder->getId()?></h2>
+                <p><?php echo $userOrder->getContactName()?></p>
+                <p><?php echo $userOrder->getContactPhone()?></p>
+                <p><?php echo $userOrder->getComment()?></p>
+                <p><?php echo $userOrder->getAddress();?></p>
                 <table>
                     <thead>
                     <tr>
@@ -24,17 +24,17 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($newUserOrder->getOrderProducts() as $orderProduct): ?>
+                        <?php foreach ($userOrder->getOrderProducts() as $orderProduct): ?>
                             <tr>
                                 <td><?php echo $orderProduct->getProduct()->getName()?></td>
                                 <td><?php echo $orderProduct->getAmount()?></td>
                                 <td><?php echo $orderProduct->getProduct()->getPrice()?></td>
-                                <td><?php echo $orderProduct->getProduct()->getTotalSum()?></td>
+                                <td><?php echo $orderProduct->getSum()?></td>
                             </tr>
                         <? endforeach; ?>
                     </tbody>
                 </table>
-                <p>Сумма заказа <?php echo $newUserOrder->getTotal()?></p>
+                <p>Сумма заказа <?php echo $userOrder->getSum()?></p>
             </div>
         <? endforeach; ?>
     </div>

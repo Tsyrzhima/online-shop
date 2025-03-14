@@ -2,13 +2,13 @@
     <a href="/catalog">Каталог продуктов</a>
     <h1 style="color: #04AA6D">Моя корзина</h1>
     <div class="container">
-        <?php foreach ($newUserProducts as $newUserProduct): ?>
+        <?php foreach ($userProducts as $userProduct): ?>
             <div class="product">
-                <img width="200" height="200" src="<?php echo $newUserProduct->getProduct()->getImageUrl()?>">
-                <h2><?php echo $newUserProduct->getProduct()->getName()?></h2>
-                <p><?php echo $newUserProduct->getProduct()->getDescription()?></p>
-                <p><?php echo $newUserProduct->getAmount()?> шт </p>
-                <div class="price">₽ <?php echo $newUserProduct->getProduct()->getPrice()?></div>
+                <img width="200" height="200" src="<?php echo $userProduct->getProduct()->getImageUrl()?>">
+                <h2><?php echo $userProduct->getProduct()->getName()?></h2>
+                <p><?php echo $userProduct->getProduct()->getDescription()?></p>
+                <p><?php echo $userProduct->getAmount()?> шт </p>
+                <div class="price">₽ <?php echo $userProduct->getProduct()->getPrice()?></div>
                 <a href="#" class="button">Удалить</a>
             </div>
         <? endforeach; ?>

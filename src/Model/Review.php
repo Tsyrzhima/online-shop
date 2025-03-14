@@ -18,7 +18,6 @@ class Review extends Model
     {
         return 'reviews';
     }
-
     public function getAllByProductId(int $productId): array|null
     {
         $statement = $this->PDO->query("SELECT * FROM {$this->getTableName()} WHERE product_id = $productId");
@@ -43,7 +42,6 @@ class Review extends Model
                         'review_comment' => $reviewComment
                         ]);
     }
-
     private function createObj(array $review): self|null
     {
         if(!$review){
@@ -59,7 +57,6 @@ class Review extends Model
 
         return $obj;
     }
-
     public function getId(): int
     {
         return $this->id;

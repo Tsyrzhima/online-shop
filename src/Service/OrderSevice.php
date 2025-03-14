@@ -5,6 +5,7 @@ namespace Service;
 use DTO\OrderCreateDTO;
 use Model\Order;
 use Model\OrderProduct;
+use Model\Product;
 use Model\UserProduct;
 
 class OrderSevice
@@ -12,27 +13,61 @@ class OrderSevice
     private Order $orderModel;
     private OrderProduct $orderProductModel;
     private UserProduct $userProductModel;
+    private AuthService $authService;
+    private Product $productModel;
     public function __construct()
     {
         $this->orderModel = new Order();
         $this->orderProductModel = new OrderProduct();
         $this->userProductModel = new UserProduct();
+        $this->authService = new AuthService();
+        $this->productModel = new Product();
     }
     public function create(OrderCreateDTO $data)
     {
-        $orderProducts = $this->userProductModel->getAllUserProductsByUserId($data->getUser()->getId());
+        $user = $this->authService->getCurrentUser();
+
+        $userProducts = $this->userProductModel->getAllUserProductsByUserId($user->getId());
+
         $orderId = $this->orderModel->create(
             $data->getName(),
             $data->getPhone(),
             $data->getComment(),
             $data->getAddress(),
-            $data->getUser()->getId()
+            $user->getId()
         );
-        foreach ($orderProducts as $orderProduct)
+        foreach ($userProducts as $userProduct)
         {
-            $this->orderProductModel->create($orderId, $orderProduct->getProductId(), $orderProduct->getAmount());
+            $this->orderProductModel->create($orderId, $userProduct->getProductId(), $userProduct->getAmount());
         }
-        $this->userProductModel->deleteByUserId($data->getUser()->getId());
+        $this->userProductModel->deleteByUserId($user->getId());
     }
+
+    public function getAll(): array
+    {
+        $user = $this->authService->getCurrentUser();
+
+        $orders = $this->orderModel->getAllByUserId($user->getId());
+
+        foreach ($orders as $order) {
+            $orderProducts = $this->orderProductModel->getAllByOrderId($order->getId());
+
+            $totalSum = 0;
+            foreach ($orderProducts as $orderProduct) {
+                $product = $this->productModel->getOneById($orderProduct->getProductId());
+                $orderProduct->setProduct($product);
+
+                $itemSum = $orderProduct->getAmount() * $product->getPrice();
+                $orderProduct->setSum($itemSum);
+
+                $totalSum += $itemSum;
+            }
+
+            $order->setOrderProducts($orderProducts);
+            $order->setSum($totalSum);
+        }
+        return $orders;
+    }
+
 
 }
