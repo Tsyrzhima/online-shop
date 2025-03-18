@@ -1,0 +1,10 @@
+Message: Для оформления заказа сумма корзины должна быть больше 1000
+File: /var/www/html/src/Service/OrderSevice.php
+Line: 36
+Date: 2025-03-18 06:18:07
+
+Message: Для оформления заказа сумма корзины должна быть больше 1000
+File: /var/www/html/src/Service/OrderSevice.php
+Line: 36
+Date: 2025-03-18 06:35:09
+

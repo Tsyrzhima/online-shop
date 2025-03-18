@@ -80,7 +80,7 @@ class ProductController extends BaseController
             $reviewComment = $request->getReview();
             $errors = $request->validate();
             if (empty($errors)) {
-                $this->reviewModel->addReview($productId, $user->getId(), $date, $rating, $reviewComment);
+                $this->reviewModel->add($productId, $user->getId(), $date, $rating, $reviewComment);
             }
             $this->getProduct(); // лучше редирект
             } else {

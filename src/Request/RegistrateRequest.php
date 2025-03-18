@@ -23,13 +23,17 @@ class RegistrateRequest extends Request
     {
         return $this->data['password'];
     }
+    public function getRepassword(): string
+    {
+        return $this->data['repassword'];
+    }
     public function validate(): array
     {
         $errors = [];
 
         // валидация имени
         if (isset($this->data['name'])) {
-            if (strlen($this->data['name']) < 2) {
+            if (mb_strlen($this->data['name']) < 2) {
                 $errors['name'] = 'Имя пользователя должно быть больше 2 символов';
             } elseif (!preg_match('/^[a-zA-Zа-яА-Я0-9_\-\.]+$/u', $this->data['name'])) {
                 $errors['name'] = "Имя пользователя может содержать только буквы, цифры, символы '_', '-', '.'";

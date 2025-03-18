@@ -28,7 +28,7 @@ class Review extends Model
         }
         return $newReviews;
     }
-    public function addReview(int $productId, int $userId, string $date, int $rating, string $reviewComment): void
+    public function add(int $productId, int $userId, string $date, int $rating, string $reviewComment): void
     {
         $stmt = $this->PDO->prepare
         (

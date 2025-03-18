@@ -8,29 +8,29 @@
             <label style="color: red"> <?php echo $errors['name'];?></label>
         <?php endif;?>
         <input type="text" id="name" name="name" required
-            <?php if(isset($data['name'])):?>
-                value="<?php echo $data['name'];?>"
+            <?php if(isset($request)):?>
+                value="<?php echo $request->getName();?>"
             <?php endif;?>>
         <label for="address">Адрес доставки:</label>
         <?php if(isset($errors['address'])):?>
             <label style="color: red"> <?php echo $errors['address'];?></label>
         <?php endif;?>
         <input type="text" id="address" name="address" required
-            <?php if(isset($data['address'])):?>
-                value="<?php echo $data['address'];?>"
+            <?php if(isset($request)):?>
+                value="<?php echo $request->getAddress();?>"
             <?php endif;?>>
         <label for="phone">Номер телефона:</label>
         <?php if(isset($errors['phone'])):?>
             <label style="color: red"> <?php echo $errors['phone'];?></label>
         <?php endif;?>
         <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required
-            <?php if(isset($data['phone'])):?>
-                value="<?php echo $data['phone'];?>"
+            <?php if(isset($request)):?>
+                value="<?php echo $request->getPhone();?>"
             <?php endif;?>>
         <label for="phone">Комментарий:</label>
         <input type="comment" id="comment" name="comment"
-            <?php if(isset($data['comment'])):?>
-                value="<?php echo $data['comment'];?>"
+            <?php if(isset($request)):?>
+                value="<?php echo $request->getComment();?>"
             <?php endif;?>>
         <div class="container">
             <?php foreach ($userProducts as $userProduct): ?>

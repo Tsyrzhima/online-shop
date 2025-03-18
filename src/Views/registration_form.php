@@ -8,8 +8,8 @@
             <label style="color: red"> <?php echo $errors['name'];?></label>
         <?php endif;?>
         <input type="text" id="name" name="name" required
-            <?php if(isset($data['name'])):?>
-                value=<?php echo $data['name'];?>
+            <?php if(isset($request)):?>
+                value=<?php echo $request->getName();?>
             <?php endif;?>>
 
         <label for="email"><b>Email:</b></label>
@@ -17,8 +17,8 @@
             <label style="color: red"> <?php echo $errors['email'];?></label>
         <?php endif;?>
         <input type="text" id="email" name="email" required
-            <?php if(isset($data['email'])):?>
-                value=<?php echo $data['email'];?>
+            <?php if(isset($request)):?>
+                value=<?php echo $request->getEmail();?>
             <?php endif;?>>
 
         <label for="password">Password:</label>
@@ -26,8 +26,8 @@
             <label style="color: red"><?php echo $errors['password'];?></label>
         <?php endif;?>
         <input type="password" id="password" name="password" required
-            <?php if(isset($data['password'])):?>
-                value=<?php echo $data['password'];?>
+            <?php if(isset($request)):?>
+                value=<?php echo $request->getPassword();?>
             <?php endif;?>>
 
         <label for="repassword">Repeat Password:</label>
@@ -35,8 +35,8 @@
             <label style="color: red"><?php echo $errors['repassword'];?></label>
         <?php endif;?>
         <input type="password" id="repassword" name="repassword" required
-            <?php if(isset($data['repassword'])):?>
-                value=<?php echo $data['repassword'];?>
+            <?php if(isset($request)):?>
+                value=<?php echo $request->getRepassword();?>
             <?php endif;?>>
         <hr>
 
