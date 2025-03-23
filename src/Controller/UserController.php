@@ -10,12 +10,6 @@ use Request\RegistrateRequest;
 
 class UserController extends BaseController
 {
-    private User $userModel;
-    public function __construct()
-    {
-        parent::__construct();
-        $this->userModel = new User();
-    }
     public function getRegistrate()
     {
         if($this->authService->check()) {
@@ -63,7 +57,7 @@ class UserController extends BaseController
 
         if (empty($errors)) {
             $hashed_password = password_hash($request->getPassword(), PASSWORD_DEFAULT);
-            $this->userModel->registrate($request->getName(), $request->getEmail(), $hashed_password);
+            User::registrate($request->getName(), $request->getEmail(), $hashed_password);
             header('Location: /catalog');
             exit();
         }
@@ -96,16 +90,16 @@ class UserController extends BaseController
 
         if (empty($errors)) {
             if (!empty($request->getName()) && ($user->getName() !== $request->getName())) {
-                $this->userModel->updateNameById($request->getName(), $userId);
+                User::updateNameById($request->getName(), $userId);
                 $flag = true;
             }
             if (!empty($request->getEmail()) && ($user->getEmail() !== $request->getEmail())) {
-                $this->userModel->updateEmailById($request->getEmail(), $userId);
+                User::updateEmailById($request->getEmail(), $userId);
                 $flag = true;
             }
             if (!empty($request->getPassword()) && (!password_verify($request->getPassword(), $user->getPassword()))) {
                 $hashed_password = password_hash($request->getPassword(), PASSWORD_DEFAULT);
-                $this->userModel->updatePasswordById($hashed_password, $userId);
+                User::updatePasswordById($hashed_password, $userId);
                 $flag = true;
             }
             if ($flag) {

@@ -10,22 +10,13 @@ use Request\AddReviewRequest;
 
 class ProductController extends BaseController
 {
-    private Product $productModel;
-    private Review $reviewModel;
-    public function __construct()
-    {
-        parent::__construct();
-        $this->productModel = new Product();
-        $this->reviewModel = new Review();
-    }
     public function getProducts()
     {
         if ($this->authService->check()) {
             $user = $this->authService->getCurrentUser();
-            $products = $this->productModel->getAll();
-            $userProductModel = new UserProduct();
+            $products = Product::getAll();
             foreach ($products as $product) {
-                $cartProduct = $userProductModel->isUserHaveProduct($user->getId(), $product->getId());
+                $cartProduct = UserProduct::isUserHaveProduct($user->getId(), $product->getId());
                 if($cartProduct){
                     $product->setAmount($cartProduct->getAmount());
                 }else{
@@ -43,19 +34,18 @@ class ProductController extends BaseController
             $user = $this->authService->getCurrentUser();
             $productId = $_POST['product_id'];
 
-            $product = $this->productModel->getOneById($productId);
+            $product = Product::getOneById($productId);
 
-            $reviews = $this->reviewModel->getAllByProductId($productId);
+            $reviews = Review::getAllByProductId($productId);
 
             $newReviews = [];
             $sumReviews = 0;
             $count = count($reviews);
-            $userModel = new User();
 
             foreach($reviews as $review)
             {
                 $userIdReview = $review->getUserId();
-                $userReview = $userModel->getById($userIdReview);
+                $userReview = User::getById($userIdReview);
                 $review->setUser($userReview);
                 $sumReviews += $review->getRating();
                 $newReviews[] = $review;
@@ -80,7 +70,7 @@ class ProductController extends BaseController
             $reviewComment = $request->getReview();
             $errors = $request->validate();
             if (empty($errors)) {
-                $this->reviewModel->add($productId, $user->getId(), $date, $rating, $reviewComment);
+                Review::add($productId, $user->getId(), $date, $rating, $reviewComment);
             }
             $this->getProduct(); // лучше редирект
             } else {

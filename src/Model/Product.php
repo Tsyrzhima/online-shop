@@ -14,43 +14,46 @@ class Product extends Model
     private float $rating;
     private int $count;
 
-    public function getTableName(): string
+    public static function getTableName(): string
     {
         return 'products';
     }
 
-    public function getAll(): array|false
+    public static function getAll(): array|false
     {
-        $statement = $this->PDO->query("SELECT * FROM {$this->getTableName()}");
+        $tableName = static::getTableName();
+        $statement = static::getPDO()->query("SELECT * FROM $tableName");
         $products = $statement->fetchAll();
         $newProducts = [];
         foreach ($products as $product) {
-            $newProducts[] = $this->createObj($product);
+            $newProducts[] = static::createObj($product, $product['id']);
         }
         return $newProducts;
     }
-    public function getOneById(int $productId): self|null
+    public static function getOneById(int $productId): self|null
     {
-        $statement = $this->PDO->query("SELECT * FROM {$this->getTableName()} WHERE id = $productId");
+        $tableName = static::getTableName();
+        $statement = static::getPDO()->query("SELECT * FROM $tableName WHERE id = $productId");
         $product = $statement->fetch();
-        return $this->createObj($product);
+        return static::createObj($product, $product['id']);
     }
 
-    private function createObj(array $product): self|null
+    public static function createObj(array $data, int $id): self|null
     {
-        if(!$product){
+        if(!$data){
             return null;
         }
 
         $obj = new self();
-        $obj->id = $product['id'];
-        $obj->name = $product['name'];
-        $obj->description = $product['description'];
-        $obj->price = $product['price'];
-        $obj->imageUrl = $product['image_url'];
+        $obj->id = $id;
+        $obj->name = $data['name'];
+        $obj->description = $data['description'];
+        $obj->price = $data['price'];
+        $obj->imageUrl = $data['image_url'];
 
         return $obj;
     }
+
     public function getId(): int
     {
         return $this->id;

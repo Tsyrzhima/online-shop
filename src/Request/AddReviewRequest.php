@@ -25,8 +25,7 @@ class AddReviewRequest extends Request
             if (!is_numeric($this->data['product_id'])) {
                 $errors['product_id'] = "id продукта может содержать только цифры";
             } else {
-                $productModel = new Product();
-                $product = $productModel->getOneById($this->data['product_id']);
+                $product = Product::getOneById($this->data['product_id']);
                 if (!$product) {
                     $errors['product_id'] = 'id c таким продуктом не существует';
                 }
@@ -44,7 +43,7 @@ class AddReviewRequest extends Request
             $errors['rating'] = "Выберите оценку";
         }
         if (isset($this->data['review'])) {
-            if (!preg_match('/^[a-zA-Z0-9\s\p{P}]+$/u', $this->data['review'])) {
+            if (!preg_match('/^[a-zA-Zа-яА-Я0-9\s\p{P}]+$/u', $this->data['review'])) {
                 $errors['reviewComment'] = "Комментарий содержит недопустимые символы";
             }
         }else{

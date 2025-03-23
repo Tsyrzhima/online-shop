@@ -5,12 +5,6 @@ namespace Request;
 use Model\User;
 class EditProfileRequest extends Request
 {
-    private User $userModel;
-    public function __construct(array $data)
-    {
-        parent::__construct($data);
-        $this->userModel = new User();
-    }
 
     public function getName(): string
     {
@@ -51,7 +45,7 @@ class EditProfileRequest extends Request
                 } elseif (!filter_var($this->data['email'], FILTER_VALIDATE_EMAIL)) {
                     $errors['email'] = "некоректный email";
                 } else {
-                    $userDb = $this->userModel->getByEmail($this->data['email']);
+                    $userDb = User::getByEmail($this->data['email']);
                     if ($userDb) {
                         if ($user->getId() !== $userDb->getId()) {
                             $errors['email'] = 'пользователь с таким email уже существует';

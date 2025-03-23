@@ -13,15 +13,16 @@ class Order extends Model
     private int $sum;
     private array $orderProducts;
 
-    public function getTableName(): string
+    public static function getTableName(): string
     {
         return 'orders';
     }
 
-    public function create(string $name, string $phone, string $comment, string $address, int $userId): int
+    public static function create(string $name, string $phone, string $comment, string $address, int $userId): int
     {
-        $stmt = $this->PDO->prepare(
-            "INSERT INTO {$this->getTableName()} (contact_name, contact_phone, comment, user_id, address)
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare(
+            "INSERT INTO $tableName (contact_name, contact_phone, comment, user_id, address)
                     VALUES (:name, :phone, :comment, :user_id, :address) RETURNING id"
         );
         $stmt->execute([
@@ -34,26 +35,45 @@ class Order extends Model
         $dataId = $stmt->fetch();
         return $dataId['id'];
     }
-    public function getAllByUserId(int $userId): array
+    public static function getAllByUserId(int $userId): array
     {
-        $stmt = $this->PDO->prepare("SELECT * FROM {$this->getTableName()} WHERE user_id = :user_id");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("SELECT * FROM $tableName WHERE user_id = :user_id");
         $stmt->execute(['user_id' => $userId]);
         $userOrders = $stmt->fetchAll();
         $newUserOrders = [];
         foreach ( $userOrders as  $userOrder) {
-            $newUserOrders[] = $this->createObj($userOrder);
+            $newUserOrders[] = static::createObj($userOrder, $userOrder['id']);
+        }
+        return $newUserOrders;
+    }
+    public static function getAllByUserIdWithProducts(int $userId): array
+    {
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("SELECT * FROM $tableName t1
+                                                    INNER JOIN order_products t2 ON t1.id = t2.order_id
+                                                    INNER JOIN products t3 ON t2.product_id = t3.id
+                                                    WHERE user_id = :user_id");
+        $stmt->execute(['user_id' => $userId]);
+        $userOrders = $stmt->fetchAll();
+        $newUserOrders = [];
+        foreach ($userOrders as  $userOrder) {
+            $newUserOrders[$userOrder['order_id']] = static::createObj($userOrder, $userOrder['order_id']);
+
+            $orderProducts[$userOrder['order_id']][$userOrder['product_id']] = OrderProduct::createObjWithProduct($userOrder, $userOrder[6]);
+            $newUserOrders[$userOrder['order_id']]->setOrderProducts($orderProducts[$userOrder['order_id']]);
         }
         return $newUserOrders;
     }
 
-    private function createObj(array $userOrder): self|null
+    public static function createObj(array $userOrder, int $id): self|null
     {
         if(!$userOrder){
             return null;
         }
 
         $obj = new self();
-        $obj->id = $userOrder['id'];
+        $obj->id = $id;
         $obj->contactName = $userOrder['contact_name'];
         $obj->contactPhone = $userOrder['contact_phone'];
         $obj->comment = $userOrder['comment'];

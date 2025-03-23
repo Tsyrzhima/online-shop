@@ -11,44 +11,63 @@ class OrderProduct extends Model
     private Product $product;
     private int $sum;
 
-    public function getTableName(): string
+    public static function getTableName(): string
     {
         return 'order_products';
     }
 
-    public function create(int $orderId, int $productId, int $amount)
+    public static function create(int $orderId, int $productId, int $amount)
     {
-        $stmt = $this->PDO->prepare
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare
         (
-            "INSERT INTO {$this->getTableName()} (order_id, product_id, amount) VALUES (:order_id, :product_id, :amount)"
+            "INSERT INTO $tableName (order_id, product_id, amount) VALUES (:order_id, :product_id, :amount)"
         );
         $stmt->execute(['order_id' => $orderId, 'product_id' => $productId, 'amount' => $amount]);
     }
-    public function getAllByOrderId(int $orderId): array|false
+    public static function getAllByOrderId(int $orderId): array|false
     {
-        $stmt = $this->PDO->prepare("SELECT * FROM {$this->getTableName()} WHERE order_id = :orderId");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("SELECT * FROM $tableName WHERE order_id = :orderId");
         $stmt->execute(['orderId' => $orderId]);
         $orderProducts = $stmt->fetchAll();
         $newOrderProducts = [];
         foreach ($orderProducts as $orderProduct)
         {
-            $newOrderProducts[] = $this->createObj($orderProduct);
+            $newOrderProducts[] = static::createObj($orderProduct, $orderProduct['id']);
         }
 
         return $newOrderProducts;
     }
-
-    private function createObj(array $orderProduct): self|null
+    public static function createObj(array $orderProduct, int $id): self|null
     {
         if(!$orderProduct){
             return null;
         }
 
         $obj = new self();
-        $obj->id = $orderProduct['id'];
+        $obj->id = $id;
         $obj->orderId = $orderProduct['order_id'];
         $obj->productId = $orderProduct['product_id'];
         $obj->amount = $orderProduct['amount'];
+
+        return $obj;
+    }
+    public static function createObjWithProduct(array $orderProduct, int $id): self|null
+    {
+        if(!$orderProduct){
+            return null;
+        }
+
+        $obj = new self();
+        $obj->id = $id;
+        $obj->orderId = $orderProduct['order_id'];
+        $obj->productId = $orderProduct['product_id'];
+        $obj->amount = $orderProduct['amount'];
+
+        $product = Product::createObj($orderProduct, $orderProduct['product_id']);
+        $obj->setProduct($product);
+        $obj->sum = $orderProduct['amount'] * $product->getPrice();
 
         return $obj;
     }

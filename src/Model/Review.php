@@ -14,25 +14,27 @@ class Review extends Model
     private string $reviewComment;
     private User $user;
 
-    public function getTableName(): string
+    public static function getTableName(): string
     {
         return 'reviews';
     }
-    public function getAllByProductId(int $productId): array|null
+    public static function getAllByProductId(int $productId): array|null
     {
-        $statement = $this->PDO->query("SELECT * FROM {$this->getTableName()} WHERE product_id = $productId");
+        $tableName = static::getTableName();
+        $statement = static::getPDO()->query("SELECT * FROM $tableName WHERE product_id = $productId");
         $reviews = $statement->fetchAll();
         $newReviews = [];
         foreach ($reviews as $review) {
-            $newReviews[] = $this->createObj($review);
+            $newReviews[] = static::createObj($review);
         }
         return $newReviews;
     }
-    public function add(int $productId, int $userId, string $date, int $rating, string $reviewComment): void
+    public static function add(int $productId, int $userId, string $date, int $rating, string $reviewComment): void
     {
-        $stmt = $this->PDO->prepare
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare
         (
-            "INSERT INTO {$this->getTableName()}(product_id, user_id, date, rating, review_comment)
+            "INSERT INTO $tableName (product_id, user_id, date, rating, review_comment)
                         VALUES (:product_id, :user_id, :date, :rating, :review_comment)"
         );
         $stmt->execute(['product_id' => $productId,
@@ -42,7 +44,7 @@ class Review extends Model
                         'review_comment' => $reviewComment
                         ]);
     }
-    private function createObj(array $review): self|null
+    public static function createObj(array $review): self|null
     {
         if(!$review){
             return null;

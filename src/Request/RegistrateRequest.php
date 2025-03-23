@@ -5,12 +5,6 @@ namespace Request;
 use Model\User;
 class RegistrateRequest extends Request
 {
-    private User $userModel;
-    public function __construct(array $data)
-    {
-        parent::__construct($data);
-        $this->userModel = new User();
-    }
     public function getName(): string
     {
         return $this->data['name'];
@@ -49,7 +43,7 @@ class RegistrateRequest extends Request
             } elseif (!filter_var($this->data['email'], FILTER_VALIDATE_EMAIL)) {
                 $errors['email'] = "некоректный email";
             } else {
-                $user = $this->userModel->getByEmail($this->data['email']);
+                $user = User::getByEmail($this->data['email']);
                 if ($user) {
                     $errors['email'] = 'пользователь с таким email уже существует';
                 }

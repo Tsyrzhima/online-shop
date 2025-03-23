@@ -11,7 +11,7 @@
             <div class="price">₽ <?php echo $product->getPrice()?></div>
             <p>кол-во <?php echo $product->getAmount()?> шт</p>
             <div class="form-container">
-                <form action="/add-product" method="POST">
+                <form class="add-form" method="POST">
                     <input type="hidden" id="product_id" name="product_id" value = "<?php echo$product->getId();?>">
                     <input type="hidden" id="amount" name="amount" value = 1>
                     <button type = "submit" class="button">+</button>
@@ -30,6 +30,25 @@
     <? endforeach; ?>
 </div>
 
+<script>
+    $("document").ready(function () {
+        $(.add-form).submit(function () {
+            $.ajax({
+                type: "POST",
+                url: "/add-product",
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function (response) {
+                    // Обновляем количество товаров в бейдже корзины
+                    //$('.badge').text(response.count);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ошибка при добавлении товара:', error);
+                }
+            });
+        });
+    });
+</script>
 
 <style>
     input[type=text], input[type=password] {

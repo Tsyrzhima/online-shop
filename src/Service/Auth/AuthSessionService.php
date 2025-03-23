@@ -7,11 +7,6 @@ use Model\User;
 
 class AuthSessionService implements AuthInterface
 {
-    protected User $userModel;
-    public function __construct()
-    {
-        $this->userModel = new User();
-    }
     public function check(): bool
     {
         $this->startSession();
@@ -22,7 +17,7 @@ class AuthSessionService implements AuthInterface
         $this->startSession();
         if($this->check()){
             $userId = $_SESSION['userId'];
-            $user = $this->userModel->getById($userId);
+            $user = User::getById($userId);
             return $user;
         }
         else{
@@ -31,7 +26,7 @@ class AuthSessionService implements AuthInterface
     }
     public function auth(AuthenticationDTO $data): bool
     {
-        $user = $this->userModel->getByEmail($data->getEmail());
+        $user = User::getByEmail($data->getEmail());
         if (!$user) {
             return false;
         } else {

@@ -7,11 +7,6 @@ use Model\User;
 
 class AuthCookieService implements AuthInterface
 {
-    protected User $userModel;
-    public function __construct()
-    {
-        $this->userModel = new User();
-    }
     public function check(): bool
     {
         return isset($_COOKIE['userId']);
@@ -20,7 +15,7 @@ class AuthCookieService implements AuthInterface
     {
         if($this->check()){
             $userId = $_COOKIE['userId'];
-            $user = $this->userModel->getById($userId);
+            $user = User::getById($userId);
             return $user;
         }
         else{
@@ -29,7 +24,7 @@ class AuthCookieService implements AuthInterface
     }
     public function auth(AuthenticationDTO $data): bool
     {
-        $user = $this->userModel->getByEmail($data->getEmail());
+        $user = User::getByEmail($data->getEmail());
         if (!$user) {
             return false;
         } else {
