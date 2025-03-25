@@ -15,7 +15,7 @@ class CartService
     {
         $this->authService = new AuthSessionService();
     }
-    public function addProduct(AddProductToCartDTO $data)
+    public function addProduct(AddProductToCartDTO $data): int
     {
         $user = $this->authService->getCurrentUser();
         $product = UserProduct::isUserHaveProduct($user->getId(), $data->getProductId());
@@ -23,8 +23,10 @@ class CartService
             $amount = $product->getAmount() + $data->getAmount();
             UserProduct::changeProductAmount($user->getId(), $data->getProductId(), $amount);
         } else {
+            $amount = $data->getAmount();
             UserProduct::addProduct($user->getId(), $data->getProductId(), $data->getAmount());
         }
+        return $amount;
     }
     public function decreaceProduct(DecreaceProductFromCartDTO $data)
     {

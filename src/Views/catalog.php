@@ -9,16 +9,19 @@
             <h2><?php echo $product->getName()?></h2>
             <p><?php echo $product->getDescription()?></p>
             <div class="price">₽ <?php echo $product->getPrice()?></div>
-            <p>кол-во <?php echo $product->getAmount()?> шт</p>
+            <span class="product-quantity" data-product-id="<?php echo $product->getId() ?>">
+                <?php echo $product->getAmount() ?>
+            </span>
+            <p> кол-во <?php echo $product->getAmount()?> шт</p>
             <div class="form-container">
-                <form class="add-form" method="POST">
+                <form class="add-form" method="POST" onsubmit="return false">
                     <input type="hidden" id="product_id" name="product_id" value = "<?php echo$product->getId();?>">
-                    <input type="hidden" id="amount" name="amount" value = 1>
+                    <input type="hidden" id="amount-add" name="amount" value = 1>
                     <button type = "submit" class="button">+</button>
                 </form>
-                <form action="/decreace-product" method="POST">
+                <form class="decreace-form" method="POST" onsubmit="return false">
                     <input type="hidden" id="product_id" name="product_id" value = "<?php echo$product->getId();?>">
-                    <input type="hidden" id="amount" name="amount" value = 1>
+                    <input type="hidden" id="amount-dec" name="amount" value = 1>
                     <button type = "submit" class="button">-</button>
                 </form>
                 <form action="/product" method="POST">
@@ -30,17 +33,38 @@
     <? endforeach; ?>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script>
     $("document").ready(function () {
-        $(.add-form).submit(function () {
+        $('.add-form').submit(function () {
             $.ajax({
                 type: "POST",
                 url: "/add-product",
                 data: $(this).serialize(),
                 dataType: 'json',
                 success: function (response) {
+                    console.log('test');
                     // Обновляем количество товаров в бейдже корзины
-                    //$('.badge').text(response.count);
+                    $('.product-quantity').text(response.amount)                },
+                error: function(xhr, status, error) {
+                    console.error('Ошибка при добавлении товара:', error);
+                }
+            });
+        });
+    });
+</script>
+<script>
+    $("document").ready(function () {
+        $('.decreace-form').submit(function () {
+            $.ajax({
+                type: "POST",
+                url: "/decreace-product",
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function (response) {
+                    console.log('test');
+                    // Обновляем количество товаров в бейдже корзины
+                    $('[data-product-id="' + productId + '"].product-quantity').text(response.amount);
                 },
                 error: function(xhr, status, error) {
                     console.error('Ошибка при добавлении товара:', error);
