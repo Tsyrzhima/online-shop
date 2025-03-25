@@ -9,10 +9,10 @@
             <h2><?php echo $product->getName()?></h2>
             <p><?php echo $product->getDescription()?></p>
             <div class="price">₽ <?php echo $product->getPrice()?></div>
-            <span class="product-quantity" data-product-id="<?php echo $product->getId() ?>">
+            <p> кол-во <span class="product-quantity" data-product-id="<?php echo $product->getId() ?>">
                 <?php echo $product->getAmount() ?>
-            </span>
-            <p> кол-во <?php echo $product->getAmount()?> шт</p>
+                        </span>
+            </p>
             <div class="form-container">
                 <form class="add-form" method="POST" onsubmit="return false">
                     <input type="hidden" id="product_id" name="product_id" value = "<?php echo$product->getId();?>">
@@ -37,15 +37,19 @@
 <script>
     $("document").ready(function () {
         $('.add-form').submit(function () {
+            var productId = $(this).find('input[name="product_id"]').val();
             $.ajax({
                 type: "POST",
                 url: "/add-product",
                 data: $(this).serialize(),
                 dataType: 'json',
                 success: function (response) {
-                    console.log('test');
+                    console.log(response);
                     // Обновляем количество товаров в бейдже корзины
-                    $('.product-quantity').text(response.amount)                },
+                    //$('.product-quantity').text(response.amount)
+                    $('.product-quantity[data-product-id="' + productId + '"]')
+                        .text(response.amount)
+                },
                 error: function(xhr, status, error) {
                     console.error('Ошибка при добавлении товара:', error);
                 }
@@ -56,15 +60,17 @@
 <script>
     $("document").ready(function () {
         $('.decreace-form').submit(function () {
+            var productId = $(this).find('input[name="product_id"]').val();
             $.ajax({
                 type: "POST",
                 url: "/decreace-product",
                 data: $(this).serialize(),
                 dataType: 'json',
                 success: function (response) {
-                    console.log('test');
+                    console.log(response);
                     // Обновляем количество товаров в бейдже корзины
-                    $('[data-product-id="' + productId + '"].product-quantity').text(response.amount);
+                    $('.product-quantity[data-product-id="' + productId + '"]')
+                        .text(response.amount)
                 },
                 error: function(xhr, status, error) {
                     console.error('Ошибка при добавлении товара:', error);

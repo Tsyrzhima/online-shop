@@ -28,7 +28,7 @@ class CartService
         }
         return $amount;
     }
-    public function decreaceProduct(DecreaceProductFromCartDTO $data)
+    public function decreaceProduct(DecreaceProductFromCartDTO $data): int
     {
         $user = $this->authService->getCurrentUser();
         $product = UserProduct::isUserHaveProduct($user->getId(), $data->getProductId());
@@ -37,9 +37,11 @@ class CartService
                 $amount = $product->getAmount() - $data->getAmount();
                 UserProduct::changeProductAmount($user->getId(), $data->getProductId(), $amount);
             }elseif ($product->getAmount() === 1){
+                $amount = 0;
                 UserProduct::deleteProduct($user->getId(), $data->getProductId());
             }
         }
+        return $amount;
     }
     public function getUserProducts(): array
     {
