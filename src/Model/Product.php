@@ -26,7 +26,7 @@ class Product extends Model
         $products = $statement->fetchAll();
         $newProducts = [];
         foreach ($products as $product) {
-            $newProducts[] = static::createObj($product, $product['id']);
+            $newProducts[] = static::createObj($product);
         }
         return $newProducts;
     }
@@ -35,17 +35,23 @@ class Product extends Model
         $tableName = static::getTableName();
         $statement = static::getPDO()->query("SELECT * FROM $tableName WHERE id = $productId");
         $product = $statement->fetch();
-        return static::createObj($product, $product['id']);
+        return static::createObj($product);
     }
 
-    public static function createObj(array $data, int $id): self|null
+    public static function createObj(array $data, int $id = null): self|null
     {
         if(!$data){
             return null;
         }
 
         $obj = new self();
-        $obj->id = $id;
+
+        if ($id !== null) {
+            $obj->id = $id;
+        }else{
+            $obj->id = $data['id'];
+        }
+
         $obj->name = $data['name'];
         $obj->description = $data['description'];
         $obj->price = $data['price'];
